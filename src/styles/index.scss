@@ -1,0 +1,398 @@
+@import './variables.scss';
+@import './mixin.scss';
+@import './transition.scss';
+@import './element-ui.scss';
+@import './sidebar.scss';
+
+body {
+  height: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+}
+
+label {
+  font-weight: 700;
+}
+
+// html {
+//   height: 100%;
+//   box-sizing: border-box;
+// }
+
+// #app {
+//   height: 100%;
+// }
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+a:focus,
+a:active {
+  outline: none;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+div:focus {
+  outline: none;
+}
+
+.clearfix {
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+}
+
+// main-container global css
+.app-container {
+  overflow: auto;
+  height: 100%;
+  padding: 20px 15px;
+}
+
+// main-container global css
+.app-container {
+  padding: 20px;
+}
+
+.table-view {
+  padding: 0 5px;
+}
+
+.title-box {
+  background: #fff;
+  width: 100%;
+  border-radius: 10px;
+  padding: 10px 5px;
+  margin-top: 2px;
+  .el-button {
+    height: 32px;
+    line-height: 32px;
+    padding: 0;
+    padding: 0 20px 0 35px;
+    color: #fff;
+  }
+
+  .el-input__inner {
+    line-height: 32px;
+    height: 32px;
+    padding: 0 5px;
+  }
+
+  .el-button.is-disabled,
+  .el-button.is-disabled:focus,
+  .el-button.is-disabled:hover {
+    background-color: #909399 !important;
+    color: #fff;
+  }
+
+  .titles-list {
+    padding: 0;
+    display: flex;
+    align-items: center;
+
+    .add {
+      background: url("../assets/icon/add.png") no-repeat 15px center #1890FF;
+    }
+
+    .del {
+      background: url("../assets/icon/del.png") no-repeat 15px center #FF4949;
+    }
+
+    .rst-pwd {
+      background: url("../assets/icon/pwd.png") no-repeat 15px center #E6A23C;
+    }
+
+    div {
+      padding-right: 15px;
+      height: 100%;
+      justify-items: center;
+      cursor: pointer;
+      color: #00395B
+    }
+  }
+
+  .title-list {
+    width: 100%;
+    display: flex;
+    margin-bottom: 15px;
+    // background: #F7F8FA;
+    box-shadow: #ccc 0px 0px 10px;
+    border-radius: 10px;
+    line-height: 72px;
+    padding: 0 20px;
+    flex-warp: warp;
+    -webkit-flex-wrap: wrap;
+
+    .list-box {
+      padding-right: 15px;
+    }
+
+    .items {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .title {
+      font-size: 14px !important;
+      color: #00395B !important;
+      padding: 5px 12px 0 0 !important;
+      font-weight: bold;
+    }
+
+    .insert {
+      background: url("../assets/icon/get.png") no-repeat 15px center #1890FF;
+    }
+
+    .resetting {
+      color: #000;
+      background: url("../assets/icon/res.png") no-repeat 15px center #fff;
+    }
+  }
+}
+
+.main {
+  width: auto;
+  height: 100%;
+  padding: 5px;
+  overflow-y: scroll;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  .cell > .article {
+    color: Blue;
+    cursor: pointer;
+  }
+  .pagination-box {
+    margin: 50px 0;
+    text-align: center;
+  }
+  .el-dialog__header {
+    height: 40px;
+    padding: 9px 16px;
+    background: #fafafa;
+    -webkit-box-shadow: 0 1px 0 0 #ddd;
+    box-shadow: 0 1px 0 0 #ddd;
+    border-bottom: none;
+}
+}
+
+.el-tree .custom-tree-node {
+  width: 100%;
+  display: inline-block;
+}
+
+//使用图片来替换
+//before属性中的content文本是用来占位的,必须有
+//可以设置字体大小来确定大小
+//使用visibility: hidden;来隐藏文字
+// .el-icon-my-edit{
+//   background: url("../assets/icon/edit.png") center no-repeat;
+//   background-size: cover;
+// }
+// .el-icon-my-edit:before{
+//   content: "替";
+//   font-size: 14px;
+//   visibility: hidden;
+// }
+// .el-icon-my-set{
+//   background: url("../assets/icon/set.png") center no-repeat;
+//   background-size: cover;
+// }
+// .el-icon-my-set:before{
+//   content: "换";
+//   font-size: 14px;
+//   visibility: hidden;
+// }
+
+
+
+@font-face {font-family: "iconfont";
+  src: url('//at.alicdn.com/t/font_2077594_9igsjul1zsu.eot?t=1602829694050'); /* IE9 */
+  src: url('//at.alicdn.com/t/font_2077594_9igsjul1zsu.eot?t=1602829694050#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('data:application/x-font-woff2;charset=utf-8;base64,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') format('woff2'),
+  url('//at.alicdn.com/t/font_2077594_9igsjul1zsu.woff?t=1602829694050') format('woff'),
+  url('//at.alicdn.com/t/font_2077594_9igsjul1zsu.ttf?t=1602829694050') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+  url('//at.alicdn.com/t/font_2077594_9igsjul1zsu.svg?t=1602829694050#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 14px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.cell,.item{
+  //如果直接使用字体图片
+//直接在before属性设置对应的content就行
+.el-icon-my-edit {
+  font-family: "iconfont" !important;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 14px;
+}
+
+.el-icon-my-edit:before {
+  content: "\e644";
+}
+
+.el-icon-my-set {
+  font-family: "iconfont" !important;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 14px;
+}
+
+.el-icon-my-set:before {
+  content: "\e6a8";
+}
+
+.el-icon-my-fenpei {
+  font-family: "iconfont" !important;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 14px;
+}
+.el-icon-my-fenpei:before {
+  content: "\e6f0";
+}
+.el-icon-my-shezi {
+  font-family: "iconfont" !important;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 14px;
+}
+.el-icon-my-shezi:before {
+  content: "\e60c";
+}
+.el-icon-my-guanlian {
+  font-family: "iconfont" !important;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 14px;
+}
+.el-icon-my-guanlian:before {
+  content: "\e601";
+}
+
+ .el-icon-my-tixing{
+  font-family: "iconfont" !important;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 28px;
+ }
+ .el-icon-my-tixing:before {
+  content: "\e61e";
+}
+}
+
+.el-icon-my-home{
+  font-family: "iconfont" !important;
+  font-style: normal;
+  background: url("../assets/icon/home.png") center no-repeat;
+  background-size: cover;
+}
+.el-icon-my-home:before{
+  content: "替"!important;
+  font-size: 14px;
+  visibility: hidden;
+}
+
+.ql-snow .ql-tooltip[data-mode=link]::before {
+  content: '请输入链接地址:'!important;
+}
+
+.ql-snow .ql-tooltip.ql-editing a.ql-action::after {
+  border-right: 0px;
+  content: '保存'!important;
+  padding-right: 0px;
+}
+
+.ql-snow .ql-tooltip[data-mode=video]::before {
+  content: '请输入视频地址:'!important;
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-label::before, .ql-snow .ql-picker.ql-size .ql-picker-item::before {
+  content: '14px';
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value=small]::before, .ql-snow .ql-picker.ql-size .ql-picker-item[data-value=small]::before {
+  content: '10px'!important;
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value=large]::before, .ql-snow .ql-picker.ql-size .ql-picker-item[data-value=large]::before {
+  content: '18px'!important;
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value=huge]::before, .ql-snow .ql-picker.ql-size .ql-picker-item[data-value=huge]::before {
+  content: '32px'!important;
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label::before, .ql-snow .ql-picker.ql-header .ql-picker-item::before {
+  content: '文本'!important;
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value='1']::before, .ql-snow .ql-picker.ql-header .ql-picker-item[data-value='1']::before {
+  content: '标题1'!important;
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value='2']::before, .ql-snow .ql-picker.ql-header .ql-picker-item[data-value='2']::before {
+  content: '标题2'!important;
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value='3']::before, .ql-snow .ql-picker.ql-header .ql-picker-item[data-value='3']::before {
+  content: '标题3'!important;
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value='4']::before, .ql-snow .ql-picker.ql-header .ql-picker-item[data-value='4']::before {
+  content: '标题4'!important;
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value='5']::before, .ql-snow .ql-picker.ql-header .ql-picker-item[data-value='5']::before {
+  content: '标题5'!important;
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value='6']::before, .ql-snow .ql-picker.ql-header .ql-picker-item[data-value='6']::before {
+  content: '标题6'!important;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label::before, .ql-snow .ql-picker.ql-font .ql-picker-item::before {
+  content: '标准字体'!important;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=serif]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=serif]::before {
+  content: '衬线字体'!important;
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=monospace]::before, .ql-snow .ql-picker.ql-font .ql-picker-item[data-value=monospace]::before {
+  content: '等宽字体'!important;
+}
+.submit-btn-temp{
+  position: absolute;
+  right: 100px;
+  bottom: 50px;
+  z-index: 9999999;
+}
