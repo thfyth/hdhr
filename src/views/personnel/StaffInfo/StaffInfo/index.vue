@@ -3186,9 +3186,7 @@ export default {
   .font {
     color: blue;
     font-size: 14px;
-    padding: 10px 0;
-    display: block;
-    text-align: center;
+    padding: 10px 5px;
     cursor: pointer;
   }
   .title-header {
