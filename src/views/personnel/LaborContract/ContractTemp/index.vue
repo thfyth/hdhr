@@ -1,25 +1,10 @@
 <template>
   <div class="main temp-main">
     <div class="title-box" style="width: auto;">
-      <!-- <div class="title-list">
-            <div class="list-box">
-              <span class="title">岗位名称</span>
-              <el-input placeholder="岗位名称" v-model="query.postName" style="width: 200px" clearable></el-input>
-            </div>
-            <div class="list-box">
-              <el-button class="insert" @click="rawQuery">查询</el-button>
-            </div>
-            <div class="list-box">
-              <el-button class="resetting" @click="runReset">重置</el-button>
-            </div>
-          </div> -->
       <div class="titles-list">
         <div class="button-box">
           <el-button class="add" @click="addQuery">新增模板</el-button>
         </div>
-        <!-- <div class="button-box">
-          <el-button class="del" @click="allDelTemp">删除</el-button>
-        </div> -->
       </div>
     </div>
     <div class="table-view">
@@ -36,6 +21,53 @@
         @handleSizeChange="handleSizeChange"
       />
     </div>
+
+    <el-dialog title="模板信息" :visible.sync="dialogVisible" width="40%">
+      <div>
+        <el-form ref="form" :model="form" label-width="120px">
+          <el-form-item label="模板名称" :required="true">
+            <el-input v-model="form.tempName" />
+          </el-form-item>
+          <el-form-item label="模板类型" :required="true">
+            <el-select v-model="form.tempType" placeholder="选择模板">
+              <el-option
+                v-for="item in typeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="模板内容" :required="true">
+            <!-- <el-input v-model="form.tempContent" /> -->
+            <el-upload
+              class="upload-demo"
+              action="http://39.98.171.233:9004/api/employee/file/uploadFile"
+              :limit="1"
+              :data="uploadData"
+              :on-exceed="handleExceed"
+              :headers="headersData"
+              :before-upload="beforeUpload"
+              name="files"
+              accept=".doc,.docx"
+              ref="upload"
+              :on-success="handleListFile"
+              :file-list="fileList"
+            >
+              <el-button size="small" type="primary">
+                <span v-if="option">点击上传</span>
+                <span v-else>更换模板内容</span>
+              </el-button>
+              <div slot="tip" class="el-upload__tip">只能上传doc/docx文件，优先选择doc</div>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div slot="footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveData">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -44,16 +76,16 @@ let vm
 import tableView from '@/components/vTable.vue'
 import axios from 'axios'
 import { getToken } from '@/utils/auth'
-// import pdf from 'vue-pdf'
-
 import {
   findTemp,
-  updataTemp
+  updataTemp,
+  findDetaTemp,
+  addTemp
 } from '@/api/personnel/contractManage'
 
 export default {
   components: {
-    tableView,
+    tableView
   },
   data() {
     return {
@@ -66,6 +98,11 @@ export default {
           value: 1
         }
       ],
+      tempId: null,
+      headersData: {
+        Authorization: 'Bearer ' + getToken()
+      },
+      uploadData: {},
       src: null,
       form: {},
       option: true,
@@ -161,7 +198,7 @@ export default {
       document.body.appendChild(a)
       a.style = 'display:none'
       a.href =
-        'http://39.98.171.233:9004:9004/api/employee/contract/previewPdf?tempId=' +
+        'http://39.98.171.233:9004/api/employee/contracttemp/previewPdf?tempId=' +
         tempId
       // a.download = filename;
       a.target = '_blank'
@@ -169,26 +206,42 @@ export default {
     },
     // 获取一个模板信息
     getOneInfo(e) {
-      const {tempId} = e;
-      vm.$router.push({
-        path: "/personnel/laborContract/tempInfo/"+tempId
-      });
+      // const { tempId } = e
+      // vm.$router.push({
+      //   path: '/personnel/laborContract/tempInfo/' + tempId
+      // })
+      vm.option = false
+      vm.form = e
+      vm.uploadData = {
+        employeeId: '',
+        purpose: 2,
+        actId: e.tempId
+      }
+      vm.dialogVisible = true
     },
-    saveData(data, filename) {
-      const blob = new Blob([data], {
-        type: 'text/html'
+    saveData() {
+      let data
+      if (vm.option) {
+        // 新增
+        data = addTemp(vm.form)
+      } else {
+        // 修改
+        data = updataTemp(vm.form)
+      }
+      data.then(res => {
+        if (res.code === 0) {
+          vm.getData()
+          // 新增成功
+          vm.$refs.upload.clearFiles()
+          vm.$message.success(res.message)
+          vm.dialogVisible = false
+        } else {
+          vm.$message.error(res.msg)
+        }
+
+
+
       })
-      const objectUrl = URL.createObjectURL(blob)
-      // const u = window.URL.createObjectURL(blob)
-      console.log(objectUrl)
-      vm.src = objectUrl
-      vm.$refs.pdffile.handleOpen()
-      // let a = document.createElement("a");
-      // document.body.appendChild(a);
-      // a.style = "display:none";
-      // a.href = objectUrl;
-      // a.download = filename;
-      // a.click();
     },
     // 多选
     getSelectionChange(e) {
@@ -210,15 +263,54 @@ export default {
     },
     // 增加合同模板
     addQuery() {
-      vm.$router.push({
-        path: "/personnel/laborContract/addTemp/0"
-      });
+      // vm.$router.push({
+      //   path: "/personnel/laborContract/addTemp/0"
+      // });
+      vm.option = true
+      vm.uploadData = {
+        employeeId: '',
+        purpose: 2,
+        actId: ''
+      }
+      vm.form={};
+      vm.dialogVisible = true
     },
     // 更改模板状态
     setStatus(e) {
       updataTemp(e)
     },
-    
+    handleExceed(files, fileList) {
+      vm.$message.warning(
+        `当前限制选择 1 个文件，本次选择了 ${
+          files.length
+        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+      )
+    },
+    // 上传文件成功
+    handleListFile(file, fileList) {
+      console.log(file)
+      if (file.code == 0) {
+        console.log('上传成功')
+        // tempId
+        // this.form.photo = file.data.nginxPath + file.data.pathList[0];
+        vm.form.tempId = file.data.actIdList[0]
+        
+        vm.$message.success('文件上传成功')
+      } else {
+        vm.$message.error('文件上传失败')
+      }
+    },
+    //上传前判断文件格式
+    beforeUpload(file){
+      console.log(file);
+      var fileTypeOf=file.name.substring(file.name.lastIndexOf('.')+1)
+      console.log(fileTypeOf);
+      if(fileTypeOf !== "doc" && fileTypeOf !== "docx"){
+        vm.$message.error('上传文件只能是 doc,docx 格式!');
+        return false
+      }
+      return fileTypeOf
+    }
   }
 }
 </script>

@@ -19,7 +19,6 @@ context.keys().forEach(element => {
 /* Layout */
 const dynamicRouter = (routerMap, parent) => {
   return routerMap.map(item => {
-    // console.log(item);
     item.name=item.name.replace('/', '')
     const {
       title,

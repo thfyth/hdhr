@@ -69,12 +69,12 @@
           </template>
         </el-table-column>
         <el-table-column prop="msgContent" label="内容"> </el-table-column>
-        <el-table-column prop="msgContent" width="100" label="状态"> 
+        <!-- <el-table-column prop="msgContent" width="100" label="状态"> 
           <template slot-scope="scope">
             <span v-if="scope.row.msgStatus == 1">未读</span>
             <span v-else>已读</span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column prop="sendTime" width="200" label="时间">
         </el-table-column>
       </el-table>
@@ -92,7 +92,7 @@
     </div>
     <div class="model">
       <el-dialog title="消息内容" :visible.sync="editVisible" width="50%">
-      <el-form ref="form" :model="form" label-width="220px">
+      <el-form ref="form" :model="form" label-width="120px">
         <el-form-item label="消息名称:">
               <span v-text="form.msgName"></span>
             </el-form-item>
@@ -110,7 +110,7 @@
 
 
 <script>
-import { getMsgList, updataMsg } from "@/api/msg";
+import { getMsgList, updataMsgType } from "@/api/msg";
 import { mapGetters } from "vuex";
 import { getAttrMenu } from "@/api/attrManage";
 import store from '@/store';
@@ -124,7 +124,8 @@ export default {
         pageNumber: "1",
         msgClass:null,
         pageSize: "10",
-        receiverIdList: [], //角色id
+        receiverId: null, //角色id
+        isReceiver:true,
         sendWay: null, //发送方式1系统消息2短信
       },
       tableData: [],
@@ -156,14 +157,8 @@ export default {
   methods: {
     getData() {
       const that = this;
-      that.query.receiverIdList = [];
-      const data = that.roleIdStr.split(","); //字符分割
-      data.forEach((v) => {
-        if (v.length > 0) {
-          that.query.receiverIdList.push(v);
-        }
-      });
-      
+      that.query.receiverId = that.roleIdStr;
+      // const data = that.roleIdStr.split(","); //字符分割
       getMsgList(that.query).then((res) => {
         if (res.code === 0) this.tableData = res.data.records,that.total=res.data.total;
       });
@@ -183,8 +178,8 @@ export default {
       const data2 = getAttrMenu({ valueCode: "send_way" });
       Promise.all([data1, data2]).then(
         (res) => (
-          (this.sendWayOption = res[1].data),
-          (this.remindClassOption = res[0].data),
+          (this.sendWayOption = res[1].data[0].send_way.option),
+          (this.remindClassOption = res[0].data[0].remind_class.option),
           this.getData()
         )
       );
@@ -196,7 +191,9 @@ export default {
       if(this.form.msgStatus === 1){
         //未读改为已读
         this.form.msgStatus=2
-        updataMsg(this.form);
+        this.form.scanNum=1
+        const { msgId } = this.form;
+        updataMsgType({msgId});
 
       }
       this.editVisible=true;
@@ -211,8 +208,9 @@ export default {
         pageNumber: "1",
         msgClass:null,
         pageSize: "10",
-        receiverIdList: [], //角色id
+        receiverId: null, //角色id
         sendWay: null, //发送方式1系统消息2短信
+        isReceiver:true
       };
       this.total=0;
       this.getData();
@@ -228,10 +226,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scope>
-.cell > .article {
-  color: Blue;
-  cursor: pointer;
-}
-</style>

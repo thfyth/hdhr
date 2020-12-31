@@ -22,4 +22,8 @@ export function getByUserRole(data) {
 export function getUserRole(data) {
     return get('user/userrole/select/bytoken',data);
 }
+//获取组织用户的树形结构
+export function getUserWithTree(data) {
+    return get('user/userrole/getOrgUserWithTree',data);
+}
 

@@ -366,7 +366,6 @@ import {
   getRank,
   //查询组织岗位职级
 } from "@/api/personnel/staff";
-import { getToken } from "@/utils/auth";
 import { getAttrMenu } from "@/api/attrManage";
 import { getBayIdManOrg } from "@/api/management/orgManage";
 import axios from "axios";
@@ -406,9 +405,6 @@ export default {
       },
       currentPage: 0,
       total: 0,
-      headersData: {
-        "X-Token": getToken(),
-      },
       drawer: false,
       // 表格数据
       tableData: [],

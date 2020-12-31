@@ -60,9 +60,6 @@ export default {
         pageNumber: "1",
         pageSize: "10",
       },
-      headersData: {
-        "X-Token": getToken(),
-      },
       workOptions:[
         {label:"是",value:1},
         {label:"否",value:0},

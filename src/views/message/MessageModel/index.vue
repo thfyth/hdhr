@@ -299,7 +299,6 @@ export default {
     getData() {
       getRemindTemp(this.query).then(
         (res) => (
-          (console.log(res)),
           (this.tableData = res.data.records),
           (this.total = res.data.total),
           this.tableData.forEach((v) => {
@@ -323,8 +322,7 @@ export default {
             // v.orgName = this.getOrgName(this.treeData, v.orgId);
             v.attrName = this.getSendWays(v.sendWays);
             v.remindClassName = this.getRemindClass(v.remindClass);
-          }),
-          console.log(this.tableData)
+          })
         )
       );
     },

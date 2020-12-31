@@ -69,7 +69,7 @@ import tableView from "@/components/vTable.vue";
 export default {
   data() {
     return {
-      total: 1,
+      total: 0,
       tableData: [],
       tableLabel: [
         { label: "员工合同id", param: "contractId", align: "center" },
@@ -87,10 +87,10 @@ export default {
         },
         { label: "合同类型", param: "contractType", align: "center" },
         { label: "合同分类", param: "contractClass", align: "center" },
-        { label: "甲方", param: "firstParty", align: "center" },
+        { label: "甲方", param: "firstCompany", align: "center" },
         {
           label: "乙方",
-          param: "secondParty",
+          param: "secondName",
           align: "center",
         },
         {
@@ -103,7 +103,7 @@ export default {
         { label: "合同有效期(起)", param: "validityBegin", align: "center" },
         { label: "合同有效期(止)", param: "validityEnd", align: "center" },
         { label: "合同备注", param: "contractDesc", align: "center" },
-        { label: "合同文件地址", param: "contractUrl", align: "center" },
+        
         {
           label: "合同状态",
           param: "status",
@@ -154,12 +154,13 @@ export default {
   methods: {
     //获取所有合同
     getData() {
-      contractSelect(this.query).then((res) => (this.tableData = res.data.records));
+      contractSelect(this.query).then((res) => (this.tableData = res.data.records,this.total=res.data.total));
     },
     //多选
     getSelectionChange() {},
     //获取单个信息
     getOneInfo(e) {
+      console.log(e);
       const { employeeId,contractId,employeeName } = e;
       this.$router.push({
         path: `/personnel/contractDetail/${employeeId}&${contractId}&${employeeName}`,

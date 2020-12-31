@@ -48,8 +48,8 @@
               <div class="button-box">
                 <el-button
                 class="btn-upload"
-                @click="uploadModel"
                 :disabled="!hasButtons('upload-staff-excel')"
+                @click="uploadModel"
               >导出员工信息模板</el-button>
               </div>
               <div class="button-box">
@@ -71,8 +71,8 @@
              <div class="button-box">
                <el-button
                 class="btn-screen"
-                @click="drawerFun"
                 :disabled="!hasButtons('screen-staff')"
+                @click="drawerFun"
               >筛选</el-button>
              </div>
              <!-- 导出员工数据 -->
@@ -142,14 +142,14 @@
                 <el-button
                   type="text"
                   icon="el-icon-edit"
-                  @click="edit(scope.$index, scope.row)"
                   :disabled="!hasButtons('staff-manage-view')"
+                  @click="edit(scope.$index, scope.row)"
                 >编辑</el-button>
                 <el-button
                   type="text"
                   icon="el-icon-delete"
-                  @click="deleteStaff(scope.$index, scope.row)"
                   :disabled="!hasButtons('staff-manage-del')"
+                  @click="deleteStaff(scope.$index, scope.row)"
                 >删除</el-button>
                 <el-popover
                   ref="popover3"
@@ -562,7 +562,7 @@ export default {
         postId: null,
         postIdList: [],
         rankId: null,
-        rankIdList: []
+        rankIdList: [],
         // status: 2,
       },
       // 岗位请求参数

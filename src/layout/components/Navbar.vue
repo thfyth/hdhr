@@ -74,8 +74,9 @@ export default {
         msgStatus: null, //消息状态（1未读2已读）
         pageNumber: "1",
         pageSize: "10",
-        receiverIdList: [], //角色id
+        receiverId: null, //角色id
         sendWay: null, //发送方式1系统消息2短信
+        isReceiver:true
       },
     };
   },
@@ -103,14 +104,9 @@ export default {
     //获取消息
     getData() {
       const that = this;
-      that.query.receiverIdList = [];
-      const data = that.roleIdStr.split(","); //字符分割
-      data.forEach((v) => {
-        if (v.length > 0) {
-          that.query.receiverIdList.push(v);
-        }
-      });
-      getMsgCount(that.query).then((res) => {
+      that.query.receiverId = that.roleIdStr;
+      
+      getMsgCount().then((res) => {
         if (res.code === 0) {
           // ...mapActions(["user",{"setMsgCount":res.data.unReadCount}])
           this.num = res.data.unReadCount;

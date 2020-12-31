@@ -13,12 +13,12 @@ import store from './store'
 import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
-// import wl from "wl-vue-select";
-// import "wl-vue-select/lib/wl-vue-select.css"
+
 // import VueParticles from 'vue-particles'
 // Vue.use(VueParticles)
-
-// Vue.use(wl);
+import wl from "wl-vue-select";
+import "wl-vue-select/lib/wl-vue-select.css"
+Vue.use(wl);
 
 // Vue.use(ElementUI)
 // Vue.use(element)
