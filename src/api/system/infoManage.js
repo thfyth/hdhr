@@ -35,3 +35,7 @@ export function updateMsg(data) {
 export function sendDingMsgs(data) {
     return get('user/msg/sendDingMsg',data);
 }
+//通过消息Id查询回复
+export function selectReply(data) {
+    return get('user/reply/selectReply',data);
+}

@@ -187,6 +187,11 @@
                 type="text"
                 @click="reCallDingMsg(row)"
               >撤回钉钉消息</el-button>
+              <el-button
+                v-if="row.isReply == 1"
+                type="text"
+                @click="getUserReply(row)"
+              >查看回复信息</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -274,20 +279,49 @@
             <el-button type="primary" @click="saveForm">确 定</el-button>
           </div>
         </el-dialog>
+        <el-dialog title="回复列表" :visible.sync="dialogVisible1" width="60%">
+          <div class="reply-info-box">
+            <el-table
+              :data="replyData"
+              :header-cell-style="{ background: '#F7F8FA', color: '#293B59' }"
+              style="width: 100%"
+              max-height="450"
+            >
+              <el-table-column type="index" label="序号" width="50" fixed />
+              <el-table-column
+                prop="userName"
+                label="回复人"
+                fixed
+                width="width"
+              />
+              <el-table-column prop="replyContent" label="回复内容" width="500" />
+              <el-table-column prop="replyTime" label="回复时间" />
+            </el-table>
+          </div>
+          <div slot="footer">
+            <el-button @click="dialogVisible1 = false">关 闭</el-button>
+          </div>
+        </el-dialog>
       </div>
     </div>
   </div>
 </template>
 <script>
-import vTable from '@/components/vTable'
-
-import { addMsg, delMsg, updateMsg, getMsgClass,sendDingMsgs,reCallDingMsgs } from '@/api/system/infoManage'
+import {
+  addMsg,
+  delMsg,
+  updateMsg,
+  getMsgClass,
+  sendDingMsgs,
+  reCallDingMsgs,
+  selectReply
+} from '@/api/system/infoManage'
 import { getAttrMenu } from '@/api/attrManage'
 import { getUserWithTree } from '@/api/system/userRole'
 
 let vm
 export default {
-  components: { vTable },
+  components: {  },
   data() {
     return {
       query: {
@@ -327,7 +361,9 @@ export default {
         }
       ],
       receiverList: [],
-      multipleSelection: ''
+      multipleSelection: '',
+      dialogVisible1: false,
+      replyData: []
     }
   },
   created() {
@@ -492,25 +528,35 @@ export default {
     },
     // 发送钉钉消息
     sendDingMsg(e) {
-      const { msgId } = e;
-      sendDingMsgs({msgId})
-      .then(res=>{
-        if(res.code === 0) {
+      const { msgId } = e
+      sendDingMsgs({ msgId }).then(res => {
+        if (res.code === 0) {
           vm.$message.success(res.message)
-        }else{
-           vm.$message.error(res.message)
+        } else {
+          vm.$message.error(res.message)
         }
       })
     },
     // 撤回钉钉消息
     reCallDingMsg(e) {
-      const { msgId } = e;
-      reCallDingMsgs({msgId})
-      .then(res=>{
-        if(res.code === 0) {
+      const { msgId } = e
+      reCallDingMsgs({ msgId }).then(res => {
+        if (res.code === 0) {
           vm.$message.success(res.message)
-        }else{
-           vm.$message.error(res.message)
+        } else {
+          vm.$message.error(res.message)
+        }
+      })
+    },
+    // 查看回复消息selectReply
+    getUserReply(e) {
+      const { msgId } = e
+      selectReply({ msgId }).then(res => {
+        if (res.code === 0) {
+          vm.replyData = res.data
+          vm.dialogVisible1 = true
+        } else {
+          vm.$$message.error(res.message)
         }
       })
     }

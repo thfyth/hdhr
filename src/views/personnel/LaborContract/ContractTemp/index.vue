@@ -28,6 +28,14 @@
           <el-form-item label="模板名称" :required="true">
             <el-input v-model="form.tempName" />
           </el-form-item>
+          <el-form-item label="组织" :required="true">
+            <el-cascader
+              v-model="form.parentIdAlls"
+              :props="propsData"
+              :show-all-levels="false"
+              :options="options">
+            </el-cascader>
+          </el-form-item>
           <el-form-item label="模板类型" :required="true">
             <el-select v-model="form.tempType" placeholder="选择模板">
               <el-option
@@ -82,7 +90,7 @@ import {
   findDetaTemp,
   addTemp
 } from '@/api/personnel/contractManage'
-
+import { getBayIdManOrg } from "@/api/management/orgManage";
 export default {
   components: {
     tableView
@@ -163,7 +171,13 @@ export default {
         status: null,
         tempType: null
       },
-      multipleSelection: ''
+      multipleSelection: '',
+      options:[],
+      propsData:{
+        value:"orgId",
+        label:"orgName",
+        checkStrictly :true
+      }
     }
   },
   created() {
@@ -181,6 +195,14 @@ export default {
         } else {
           vm.$message.error(res.msg)
         }
+      })
+      const query={
+        pageNumber: "1",
+        pageSize: "10",
+      }
+      getBayIdManOrg(query)
+      .then(res=>{
+        vm.options=res.data;
       })
     },
     getButton(e, row) {
@@ -221,6 +243,11 @@ export default {
     },
     saveData() {
       let data
+      const list = vm.form.parentIdAlls || [];
+      if(list.length>0){
+        vm.form.orgId=list.slice(-1)[0];
+      }
+      
       if (vm.option) {
         // 新增
         data = addTemp(vm.form)
@@ -228,6 +255,9 @@ export default {
         // 修改
         data = updataTemp(vm.form)
       }
+
+
+      
       data.then(res => {
         if (res.code === 0) {
           vm.getData()

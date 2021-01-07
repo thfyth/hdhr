@@ -69,12 +69,12 @@
           </template>
         </el-table-column>
         <el-table-column prop="msgContent" label="内容"> </el-table-column>
-        <!-- <el-table-column prop="msgContent" width="100" label="状态"> 
+        <el-table-column prop="msgContent" width="100" label="状态"> 
           <template slot-scope="scope">
-            <span v-if="scope.row.msgStatus == 1">未读</span>
+            <span v-if="scope.row.replied == 0">未读</span>
             <span v-else>已读</span>
           </template>
-        </el-table-column> -->
+        </el-table-column>
         <el-table-column prop="sendTime" width="200" label="时间">
         </el-table-column>
       </el-table>

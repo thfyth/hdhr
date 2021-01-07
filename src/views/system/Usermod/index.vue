@@ -125,7 +125,7 @@
                   @click="setrole(scope.$index, scope.row)"
                   >设置角色</el-button
                 >
-                <el-button
+                <!-- <el-button
                   type="text"
                   icon="el-icon-my-guanlian"
                   :disabled="!hasButtons('personer-staff')"
@@ -133,7 +133,7 @@
                 >
                   <span v-if="scope.row.employeeId">更换关联员工</span>
                   <span v-else>关联员工</span>
-                </el-button>
+                </el-button> -->
               </template>
             </el-table-column>
           </el-table>

@@ -267,9 +267,30 @@ export function delFiles(data) {
     return get('employee/file/delFiles',data);
 }
 
-
-
 //员工姓名
 export function perNames(data) {
     return get('employee/names',data);
+}
+
+
+//查询员工个人社保公积金
+export function getOneSocialFund(data) {
+    return get('employee/socialFund/getOneSocialFund',data);
+}
+//查询个人考勤信息
+export function getOneAttend(data) {
+    return get('employee/attend/getOneAttend',data);
+}
+
+//获取个人文件
+export function getUserFile(data) {
+    return get('employee/file/getOneFiles',data);
+}
+//通过员工id查询员工合同
+export function getUserContract(data) {
+    return get('employee/contract/'+data);
+}
+//查询个人考勤信息
+export function getAttendInfo(data) {
+    return get('employee/attend/getAttendDetail',data);
 }
