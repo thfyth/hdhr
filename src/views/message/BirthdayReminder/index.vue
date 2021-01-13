@@ -4,12 +4,23 @@
     <div class="title-box" style="width: auto">
       <div class="title-list">
         <div class="list-box">
-          <span class="title">月份</span>
+          <span class="title">类型</span>
+          <el-select v-model="query.type" placeholder="选择查询类型" style="width:100px">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="list-box">
+          <span class="title">时间</span>
           <el-date-picker
-            v-model="query.month"
-            type="month"
-            format="M 月"
-            value-format="MM">
+            v-model="query.nowValue"
+            type="date"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd">
           </el-date-picker>
         </div>
         <div class="list-box">
@@ -89,10 +100,21 @@ export default {
       query: {
         pageNumber: 1,
         pageSize: 20,
-        month: '',
+        // 当前日期
+        nowValue: null,
+        type:null
       },
       tableData:[],
       total:0,
+      options:[
+        {
+          label:"月",
+          value:1
+        },{
+          label:"日",
+          value:2
+        },
+      ]
       
     };
   },
@@ -103,10 +125,10 @@ export default {
   components: {},
   methods: {
     getData() {
-      const month=vm.query.month;
-      if(month!=""){
-        vm.query.month=parseInt(month);
-      }
+      // const month=vm.query.month;
+      // if(month!=""){
+      //   vm.query.month=parseInt(month);
+      // }
       getBirthday(vm.query).then((res) => {
         vm.tableData=res.data.records;
         vm.total=res.data.total;

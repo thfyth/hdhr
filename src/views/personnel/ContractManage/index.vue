@@ -2,43 +2,29 @@
   <div class="main">
     <div class="main-box">
       <div class="title-box" style="width: auto">
-        <!-- <div class="title-list">
+        <div class="title-list">
             <div class="list-box">
-              <span class="title">姓名:</span>
-              <el-input placeholder="请输入姓名" v-model="query.realName" style="width: 200px" clearable></el-input>
+              <span class="title">员工姓名:</span>
+              <el-input placeholder="请输入姓名" v-model="query.employeeName" style="width: 200px" clearable></el-input>
             </div>
             <div class="list-box">
-              <span class="title">用户名:</span>
-              <el-input
-                placeholder="请输入用户名"
-                v-model="query.userName"
-                style="width: 200px"
-                clearable
-              ></el-input>
-            </div>
-            <div class="list-box">
-              <span class="title">手机号:</span>
-              <el-input placeholder="请输入手机号" v-model="query.mobile" style="width: 200px" clearable></el-input>
-            </div>
-            <div class="list-box">
-              <el-button class="insert" @click="rawQuery">查询</el-button>
+              <el-button class="insert" @click="getData">查询</el-button>
             </div>
             <div class="list-box">
               <el-button class="resetting" @click="runReset">重置</el-button>
             </div>
-          </div> -->
-        <!-- <div class="titles-list">
+          </div>
+        <div class="titles-list">
             <div class="button-box">
-              <el-button class="add" :disabled="!hasButtons('personer-add')" @click="addQuery">新增</el-button>
+              <!-- <el-button class="add" @click="addQuery">新增</el-button> -->
             </div>
             <div class="button-box">
               <el-button
                 class="del"
-                :disabled="!hasButtons('personer-del') || multipleSelection == ''"
-                @click="allDelUser"
+                @click="allDelCon"
               >删除</el-button>
             </div>
-          </div> -->
+          </div>
       </div>
       <div class="table-view">
         <table-view
@@ -124,25 +110,10 @@ export default {
       tableOption: {},
       //查询合同参数
       query: {
-        contractClass: null,
-        contractCode: null,
-        contractDesc: null,
-        contractId: null,
-        contractName: null,
-        contractType: null,
-        contractUrl: null,
-        createBy: null,
-        employeeId: null,
-        firstParty: null,
-        probationBegin: null,
-        probationEnd: null,
-        secondParty: null,
-        signDate: null,
-        updateBy: null,
-        validityBegin: null,
-        validityEnd: null,
-        isEnable: 0,
+        pageNumber:1,
+        pageSize:10
       },
+      multipleSelection:''
     };
   },
   created() {
@@ -157,7 +128,14 @@ export default {
       contractSelect(this.query).then((res) => (this.tableData = res.data.records,this.total=res.data.total));
     },
     //多选
-    getSelectionChange() {},
+    getSelectionChange(e) {
+      let arr = "";
+      // multipleSelection
+      e.forEach((v) => {
+        arr += v.contractId + ",";
+      });
+      this.multipleSelection = arr;
+    },
     //获取单个信息
     getOneInfo(e) {
       console.log(e);
@@ -176,7 +154,43 @@ export default {
       this.query.pageSize = e;
       this.getData();
     },
-  },
+    //重置
+    runReset(){
+      this.query={
+        pageNumber:1,
+        pageSize:10,
+        employeeName:null
+      }
+      this.getData();
+    },
+    //删除合同
+    allDelCon(){
+      const that = this;
+      const idList = that.multipleSelection;
+      if (idList.length < 1) {
+        that.$message.error("请最少选择一个合同进行删除");
+        return;
+      }
+      that
+        .$confirm("此操作将会删除合同, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+        .then(() => {
+          //删除信息
+          delContract({ idList }).then((res) => {
+            if (res.code === 0) {
+              that.$message.success(res.message);
+              that.getData();
+            } else {
+              that.$message.error(res.message);
+            }
+          });
+        })
+        .catch((err) => {});
+    }
+  }
 };
 </script>
 

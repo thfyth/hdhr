@@ -1185,11 +1185,17 @@
           <span v-else class="font" @click="setStaffInfo">编辑</span>
         </div>
         <el-form ref="form" :model="form" label-width="140px" border>
-          <el-row>
-            <el-col :span="6">
-              <el-form-item label="员工类型">
+          <table
+            align="center"
+              cellspacing="0"
+              border="1"
+              style="width: 100%; table-layout: fixed"
+          >
+            <tr>
+              <th>员工类型</th>
+              <td>
                 <el-select
-                  v-if="option"
+                  :disabled="!option"
                   ref="selection"
                   v-model="form.employeeType"
                   placeholder="员工类型"
@@ -1201,13 +1207,11 @@
                     :value="item.attrValue"
                   />
                 </el-select>
-                <span v-else v-html="optionData.employeeLable" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="用工方式">
+              </td>
+              <th>用工方式</th>
+              <td>
                 <el-select
-                  v-if="option"
+                  :disabled="!option"
                   v-model="form.employmentModule"
                   placeholder="用工方式"
                 >
@@ -1218,77 +1222,59 @@
                     :value="item.attrValue"
                   />
                 </el-select>
-                <span v-else v-html="optionData.employmentModuleLable" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="最近一次签合同日期">
+              </td>
+              <th>最近一次签合同日期</th>
+              <td>
                 <span v-html="form.contractRecently" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="合同到期日期">
+              </td>
+            </tr>
+            <tr>
+              <th>合同到期日期</th>
+              <td>
                 <span v-html="form.contractEnd" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="6">
-              <el-form-item label="合同签署公司">
+              </td>
+              <th>合同签署公司</th>
+              <td>
                 <span v-html="form.contractCompany" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="第几次签订合同">
+              </td>
+              <th>第几次签订合同</th>
+              <td>
                 <span v-html="form.contractHow" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="连续第几次签订合同">
+              </td>
+            </tr>
+            <tr>
+              <th>连续第几次签订合同</th>
+              <td>
                 <span v-html="form.contractContinuous" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="入职日期">
-                <span v-html="form.entryDate" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="6">
-              <el-form-item label="工龄">
-                <el-input v-if="option" v-model="form.workingYears" />
-                <span v-else v-html="form.workingYears" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="办公室座机">
-                <el-input v-if="option" v-model="form.officePhone" />
-                <span v-else v-html="form.officePhone" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="拟转正日期">
+              </td>
+              <th>入职日期</th>
+              <td>
+                 <span v-html="form.entryDate" />
+              </td>
+              <th>工龄</th>
+              <td>
+                <el-input :disabled="!option" v-model="form.workingYears" />
+              </td>
+            </tr>
+            <tr>
+              <th>办公室座机</th>
+              <td>
+                <el-input :disabled="!option" v-model="form.officePhone" />
+              </td>
+              <th>拟转正日期</th>
+              <td>
                 <span v-html="form.planBecome" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="司龄">
-                <el-input v-if="option" v-model="form.seniority" />
-                <span v-else v-html="form.seniority" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="6">
-              <el-form-item label="所属组织">
-                <span v-html="form.org_id" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="工时类型">
+              </td>
+              <th>司龄</th>
+              <td>
+                <el-input :disabled="!option" v-model="form.seniority" />
+              </td>
+            </tr>
+            <tr>
+              <th>工时类型</th>
+              <td>
                 <el-select
-                  v-if="option"
+                  :disabled="!option"
                   v-model="form.workingType"
                   placeholder="工时类型"
                 >
@@ -1299,31 +1285,25 @@
                     :value="item.attrValue"
                   />
                 </el-select>
-                <span v-else v-html="optionData.workingType" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="实际转正日期">
+              </td>
+              <th>实际转正日期</th>
+              <td>
                 <span v-html="form.realityBecome" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="司龄开始日期">
+              </td>
+              <th>司龄开始日期</th>
+              <td>
                 <span v-html="form.seniorityBeginDate" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="6">
-              <el-form-item label="工作地点">
-                <el-input v-if="option" v-model="form.workplace" />
-                <span v-else v-html="form.workplace" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="是否有试用期">
+              </td>
+            </tr>
+            <tr>
+              <th>工作地点</th>
+              <td>
+                <el-input :disabled="!option" v-model="form.workplace" />
+              </td>
+              <th>是否有试用期</th>
+              <td>
                 <el-select
-                  v-if="option"
+                  :disabled="!option"
                   v-model="form.isPeriod"
                   placeholder="是否有试用期"
                 >
@@ -1334,24 +1314,19 @@
                     :value="item.attrValue"
                   />
                 </el-select>
-                <span v-else v-html="optionData.isPeriod" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="开始工作日期">
+              </td>
+              <th>开始工作日期</th>
+              <td>
                 <span v-html="form.startWorkDate" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="企业邮箱">
-                <el-input v-if="option" v-model="form.firmEmail" />
-                <span v-else v-html="form.firmEmail" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="6">
-              <el-form-item label="部门">
+              </td>
+            </tr>
+            <tr>
+              <th>企业邮箱</th>
+              <td>
+                <el-input :disabled="!option" v-model="form.firmEmail" />
+              </td>
+              <th>部门</th>
+              <td>
                 <el-cascader
                   ref="orgIdCascader"
                   v-model="form.orgId"
@@ -1360,10 +1335,9 @@
                   :props="orgProps"
                   :show-all-levels="false"
                 />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="岗位">
+              </td>
+              <th>岗位</th>
+              <td>
                 <el-select
                   v-model="form.postId"
                   :disabled="!option"
@@ -1376,15 +1350,21 @@
                     :value="item.postId"
                   />
                 </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
+              </td>
+            </tr>
+          </table>
           <!-- <el-form-item>
             <el-button type="primary" @click="onSubmit">保存信息</el-button>
           </el-form-item>-->
         </el-form>
       </el-tab-pane>
       <el-tab-pane label="五险一金" name="insurances">
+        <div class="title">
+          <span class="title-header">五险一金</span>
+          <span v-if="option" class="font" @click="getStaffInfo">取消</span>
+          <span v-if="option" class="font" @click="updataInsurances">保存</span>
+          <span v-else class="font" @click="setStaffInfo">编辑</span>
+        </div>
         <el-form>
           <table
             align="center"
@@ -1395,57 +1375,59 @@
             <tr>
               <th>姓名</th>
               <td>
-                <span v-text="socialForm.employeeName" />
+                <span v-text="form.employeeName" />
               </td>
               <th>身份证号码</th>
               <td>
-                <span v-text="socialForm.idNo" />
+                <span v-text="form.idNo" />
               </td>
               <th>社保编号</th>
               <td>
-                <span v-text="socialForm.socialCode" />
+                <el-input :disabled="!option" v-model="socialForm.socialCode" />
               </td>
             </tr>
             <tr>
               <th>社保参保状态</th>
               <td>
-                <span v-text="socialForm.socialStatusName" />
+                <el-input :disabled="!option" v-model="socialForm.socialStatusName" />
               </td>
               <th>社保户籍性性质</th>
               <td>
-                <span v-text="socialForm.socialRegistrationType" />
+                <el-input :disabled="!option" v-model="socialForm.socialRegistrationType" />
               </td>
               <th>社保参保地</th>
               <td>
-                <span v-text="socialForm.socialAddress" />
+                <el-input :disabled="!option" v-model="socialForm.socialAddress" />
               </td>
             </tr>
             <tr>
               <th>社保缴纳基数</th>
               <td>
-                <span v-text="socialForm.socialPayBase" />
+                <el-input :disabled="!option" v-model="socialForm.socialPayBase" />
               </td>
               <th>公积金参保状态</th>
               <td>
-                <span v-text="socialForm.fundStatusName" />
+                <el-input :disabled="!option" v-model="socialForm.fundStatusName" />
+                
               </td>
               <th>公积金编号</th>
               <td>
-                <span v-text="socialForm.fundCode" />
+                <el-input :disabled="!option" v-model="socialForm.fundCode" />
               </td>
             </tr>
             <tr>
               <th>公积金参保地</th>
               <td>
-                <span v-text="socialForm.fundAddress" />
+                <el-input :disabled="!option" v-model="socialForm.fundAddress" />
               </td>
               <th>公积金户籍性质</th>
               <td>
-                <span v-text="socialForm.fundRegistrationType" />
+                <el-input :disabled="!option" v-model="socialForm.fundRegistrationType" />
+              
               </td>
               <th>公积金缴纳基数</th>
               <td>
-                <span v-text="socialForm.fundPayBase" />
+                <el-input :disabled="!option" v-model="socialForm.fundPayBase" />
               </td>
             </tr>
           </table>
@@ -2279,6 +2261,7 @@ import { getAttrMenu } from '@/api/attrManage'
 import { selectAllDrop } from '@/api/user'
 import { some } from 'sockjs-client/lib/transport-list'
 import { getBayIdManOrg } from '@/api/management/orgManage'
+import { updateSocia } from "@/api/socialsecurity";
 export default {
   data() {
     return {
@@ -2399,7 +2382,7 @@ export default {
       uploadData: {
         employeeId: '',
         purpose: 1,
-        actId: 'employeeId'
+        actId: this.$route.params.employeeId
       },
       files: [],
       // 员工id
@@ -3089,7 +3072,23 @@ export default {
       a.href = file_url
       a.target="_blank"
       a.click()
+    },
+    updataInsurances(){
+      const that=this;
+      that.socialForm.employeeId=that.form.employeeId;
+      updateSocia(that.socialForm)
+      .then(res=>{
+        if(res.code === 0){
+          that.getInfo();
+          that.option=false
+          that.$message.success(res.message)
+        }else{
+          that.$message.error(res.message)
+        }
+        
+      })
     }
+    
   }
 }
 </script>

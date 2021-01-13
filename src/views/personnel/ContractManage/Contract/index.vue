@@ -165,7 +165,8 @@
                       :value="item.attrValue"
                     />
                   </el-select>
-                  <el-date-picker
+                  <div v-if="form.isPeriod == 1" class="list">
+                    <el-date-picker
                     v-if="userOption"
                     v-model="form.probationBegin"
                     value-format="yyyy-MM-dd"
@@ -182,6 +183,7 @@
                     placeholder="试用期(止):"
                   />
                   <span v-else>{{ form.probationEnd }}</span>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -562,7 +564,7 @@ export default {
       updateContract(that.form).then(res => {
         if (res.code === 0) {
           that.$message.success(res.message)
-          that.getSelectData()
+          // that.getSelectData()
           that.getDate()
           that.userOption = false
         } else {

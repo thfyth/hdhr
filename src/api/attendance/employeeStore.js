@@ -21,3 +21,8 @@ export function selectByIdAttend(data) {
 export function updataAttend(data) {
     return put('employee/attend/update',data);
 }
+
+// 获取上个月的考勤数据
+export function getAttendRecord(data) {
+    return get('ding/getAttendanceListrecord',data);
+}

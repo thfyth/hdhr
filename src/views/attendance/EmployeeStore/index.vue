@@ -22,6 +22,9 @@
         <div class="list-box">
           <el-button type="primary" @click="uploadModel">导出考勤信息</el-button>
         </div>
+        <div class="list-box">
+          <el-button class="resetting" @click="getAttendRecordList">更新考勤数据</el-button>
+        </div>
       </div>
     </div>
     <div class="table-view">
@@ -46,6 +49,7 @@ import {
   delAttend,
   selectByIdAttend,
   updataAttend,
+  getAttendRecord
 } from "@/api/attendance/employeeStore";
 import tableView from "@/components/vTable.vue";
 import { isButtons } from "@/utils/button";
@@ -67,12 +71,43 @@ export default {
       tableData: [],
       tableLabel: [
         { label: "员工名称",selection:true, param: "employeeName", align: "center" },
-        { label: "手机号码", param: "mobile", align: "center" },
-        { label: "打卡日期", param: "createDate", align: "center" },
-        { label: "上班打卡时间", param: "benginTime", align: "center" },
-        { label: "下班打卡时间", param: "endTime", align: "center" },
-        { label: "工作时长", param: "workingHours", align: "center" },
+        // { label: "手机号码", param: "mobile", align: "center" },
+        { label: "打卡时间", param: "clockTime", align: "center" },
+ 
+        // { label: "上班打卡时间", param: "benginTime", align: "center" },
+        // { label: "下班打卡时间", param: "endTime", align: "center" },
+        // { label: "工作时长", param: "workingHours", align: "center" },
         {
+          label: "考勤类型",
+          align: "center",
+          render: (row) => {
+            if (row.clockType == 'OnDuty') {
+              return "上班";
+            } else if(row.clockType == 'OffDuty'){
+              return "下班";
+            }else{
+              return '---'
+            }
+          },
+        },{
+          label: "打卡结果",
+          align: "center",
+          render: (row) => {
+            if (row.result == 'Normal') {
+              return "正常";
+            } else if(row.result == 'Early') {
+              return "早退";
+            }else if(row.result == 'Late') {
+              return "迟到";
+            }else if(row.result == 'SeriousLate') {
+              return "严重迟到";
+            }else if(row.result == 'Absenteeism') {
+              return "旷工";
+            }else if(row.result == 'NotSigned') {
+              return "未打卡";
+            }
+          },
+        },{
           label: "是否工作日",
           align: "center",
           render: (row) => {
@@ -162,6 +197,14 @@ export default {
       a.download = filename;
       a.click();
     },
+    //获取上月考勤数据
+    getAttendRecordList(){
+      getAttendRecord().
+      then(res=>{
+        console.log(res);
+      })
+    },
+    
   },
 };
 </script>

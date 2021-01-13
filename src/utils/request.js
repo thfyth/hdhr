@@ -26,8 +26,8 @@ const hideLoading = () => {
 const service = axios.create({
 	timeout: 20000, // 超时时间
 	// baseURL: 'http://192.168.1.105:9004/api/', // 公共地址
-	// baseURL: 'http://192.168.1.52:9004/api/', // 公共地址
-	baseURL: 'http://39.98.171.233:9004/api/', // 公共地址
+	baseURL: 'http://192.168.1.52:9004/api/', // 公共地址
+	// baseURL: 'http://39.98.171.233:9004/api/', // 公共地址
 	// baseURL: 'http://192.168.1.22:9004/api/', // 公共地址
 })
 
