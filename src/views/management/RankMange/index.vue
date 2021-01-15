@@ -91,7 +91,7 @@
           :expand-on-click-node="false"
         >
           <div class="custom-tree-node" slot-scope="{ data }">
-            <span>{{ data.orgName }}</span>
+            <span :style="{'color':data.disabled?'#000':'#A00005'}">{{ data.orgName }}</span>
           </div>
         </el-tree>
       </div>
@@ -456,6 +456,7 @@ export default {
     background-color: #c5466d !important;
     color: #fff !important;
   }
+  
 }
 //去除删除多选框按钮
 .el-select .el-tag__close.el-icon-close {

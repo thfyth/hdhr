@@ -67,6 +67,12 @@
                   <el-button class="add" :disabled="!hasButtons('load-staff-info')">批量导入员工信息</el-button>
                 </el-upload>
               </div>
+              <div class="button-box">
+               <el-button
+                class="btn-leave"
+                @click="staffLeave"
+              >离职</el-button>
+             </div>
             </div>
              <div class="button-box">
                <el-button
@@ -104,7 +110,7 @@
           </span>
         </div>
         <div class="table-view">
-          <el-table :data="tableData" stripe>
+          <el-table :data="tableData" stripe @selection-change="getSelectionChange" :header-cell-style="{ background: '#F7F8FA', color: '#293B59' }">
             <el-table-column
               type="selection"
               width="55"
@@ -526,7 +532,8 @@ import {
   getPost,
   getRank,
   findOrgTree,
-  getTotal
+  getTotal,
+  addLeaveStaff
   // 查询组织岗位职级
 } from '@/api/personnel/staff'
 import { selectAllDrop } from '@/api/user'
@@ -563,7 +570,7 @@ export default {
         postIdList: [],
         rankId: null,
         rankIdList: [],
-        // status: 2,
+        status: 2,
       },
       // 岗位请求参数
       postQuery: {},
@@ -636,7 +643,9 @@ export default {
       emTotalList: [],
       dialogVisible: false,
       parentIdAll: null,
-      orgId: null
+      orgId: null,
+      multipleSelection:''
+      
     }
   },
   created() {
@@ -651,7 +660,6 @@ export default {
       const data = getEmployeesList(this.employeeQuery)
       data.then(
         res => (
-          console.log(res),
           (this.tableData = res.data.records),
           (this.total = res.data.total)
         )
@@ -664,7 +672,8 @@ export default {
       const org = getBayIdManOrg(this.orgQuery)
       const post = getPost(this.postQuery)
       const rank = getRank(this.rankQuery)
-      const tree = findOrgTree()
+      const isLeave=2;
+      const tree = findOrgTree({isLeave})
       const emTotal = getTotal()
       Promise.all([org, rank, post, tree, emTotal]).then(
         res => (
@@ -885,7 +894,13 @@ export default {
     // 获取表格单个信息
     getOneData() {},
     // 多选事件
-    getSelectionChange() {},
+    getSelectionChange(e) {
+      let arr = "";
+      e.forEach((v) => {
+        arr += v.employeeId + ",";
+      });
+      this.multipleSelection = arr;
+    },
     addEmp() {
       // this.$router.push({ name: 'addEmployees', params: { employeeId: 0 }})
       if (!this.orgId) {
@@ -1097,6 +1112,29 @@ export default {
       }else{
         return true;
       }
+    },
+    //员工离职
+    staffLeave(){
+      const that=this;
+      that
+        .$confirm('此操作将会让员工离职, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        .then(() => {
+          const empIdList = that.multipleSelection;
+          // 删除信息
+          addLeaveStaff(empIdList).then(res => {
+            if (res.code === 0) {
+              that.$message.success(res.message)
+              that.geteEployees()
+            } else {
+              that.$message.error(res.message)
+            }
+          })
+        })
+        .catch(err => {})
     }
   }
 }

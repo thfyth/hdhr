@@ -1225,31 +1225,49 @@
               </td>
               <th>最近一次签合同日期</th>
               <td>
-                <span v-html="form.contractRecently" />
+                <el-date-picker
+                    v-model="form.contractRecently"
+                    :disabled="!option"
+                    value-format="yyyy-MM-dd"
+                    format="yyyy 年 MM 月 dd 日"
+                    type="date"
+                  />
               </td>
             </tr>
             <tr>
               <th>合同到期日期</th>
               <td>
-                <span v-html="form.contractEnd" />
+                <el-date-picker
+                    v-model="form.contractEnd"
+                    :disabled="!option"
+                    value-format="yyyy-MM-dd"
+                    format="yyyy 年 MM 月 dd 日"
+                    type="date"
+                  />
               </td>
               <th>合同签署公司</th>
               <td>
-                <span v-html="form.contractCompany" />
+                <el-input :disabled="!option" v-model="form.contractCompany" />
               </td>
               <th>第几次签订合同</th>
               <td>
-                <span v-html="form.contractHow" />
+                <el-input :disabled="!option" v-model="form.contractHow" />
               </td>
             </tr>
             <tr>
               <th>连续第几次签订合同</th>
               <td>
-                <span v-html="form.contractContinuous" />
+                <el-input :disabled="!option" v-model="form.contractContinuous" />
               </td>
               <th>入职日期</th>
               <td>
-                 <span v-html="form.entryDate" />
+                 <el-date-picker
+                    v-model="form.entryDate"
+                    :disabled="!option"
+                    value-format="yyyy-MM-dd"
+                    format="yyyy 年 MM 月 dd 日"
+                    type="date"
+                  />
               </td>
               <th>工龄</th>
               <td>
@@ -1263,7 +1281,13 @@
               </td>
               <th>拟转正日期</th>
               <td>
-                <span v-html="form.planBecome" />
+                <el-date-picker
+                    v-model="form.planBecome"
+                    :disabled="!option"
+                    value-format="yyyy-MM-dd"
+                    format="yyyy 年 MM 月 dd 日"
+                    type="date"
+                  />
               </td>
               <th>司龄</th>
               <td>
@@ -1288,11 +1312,23 @@
               </td>
               <th>实际转正日期</th>
               <td>
-                <span v-html="form.realityBecome" />
+                <el-date-picker
+                    v-model="form.realityBecome"
+                    :disabled="!option"
+                    value-format="yyyy-MM-dd"
+                    format="yyyy 年 MM 月 dd 日"
+                    type="date"
+                  />
               </td>
               <th>司龄开始日期</th>
               <td>
-                <span v-html="form.seniorityBeginDate" />
+                <el-date-picker
+                    v-model="form.seniorityBeginDate"
+                    :disabled="!option"
+                    value-format="yyyy-MM-dd"
+                    format="yyyy 年 MM 月 dd 日"
+                    type="date"
+                  />
               </td>
             </tr>
             <tr>
@@ -1317,7 +1353,13 @@
               </td>
               <th>开始工作日期</th>
               <td>
-                <span v-html="form.startWorkDate" />
+                <el-date-picker
+                    v-model="form.startWorkDate"
+                    :disabled="!option"
+                    value-format="yyyy-MM-dd"
+                    format="yyyy 年 MM 月 dd 日"
+                    type="date"
+                  />
               </td>
             </tr>
             <tr>

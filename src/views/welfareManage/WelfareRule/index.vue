@@ -262,7 +262,6 @@ export default {
             }
           })
         })
-        .catch(err => {})
     },
     // 重置
     runReset() {

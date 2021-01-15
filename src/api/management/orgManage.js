@@ -25,3 +25,7 @@ export function getBayIdOrg(data) {
 export function getHistory(data) {
     return get('user/org/select/version',data);
 }
+//更新最新组织信息 钉钉
+export function updataDingOrg() {
+    return get('ding/org/dingOrg');
+}

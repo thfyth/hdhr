@@ -59,7 +59,7 @@
               width="180"
             ></el-table-column>
             <el-table-column label="在职状态" width="180">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <span v-if="scope.row.status == 2">离职</span>
                 <span v-else>在职</span>
               </template>
@@ -73,7 +73,7 @@
               label="参保地"
             ></el-table-column>
             <el-table-column label="社保是否当地首次参保">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <span v-if="scope.row.socialIsFirst == 1">是</span>
                 <span v-else>否</span>
               </template>
@@ -87,7 +87,7 @@
               label="社保缴纳基数"
             ></el-table-column>
             <el-table-column label="社保缴纳方式">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <span v-if="scope.row.socialPayWay == 1">自缴</span>
                 <span v-else>代缴</span>
               </template>
@@ -109,7 +109,7 @@
               label="公积金参保地"
             ></el-table-column>
             <el-table-column label="公积金是否当地首次缴纳">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <span v-if="scope.row.fundIsFirst == 1">是</span>
                 <span v-else>否</span>
               </template>
@@ -127,7 +127,7 @@
               label="缴纳比例"
             ></el-table-column>
             <el-table-column label="公积金缴纳方式">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <span v-if="scope.row.fundPayWay == 1">自缴</span>
                 <span v-else>代缴</span>
               </template>
@@ -144,10 +144,11 @@
             <el-table-column prop="mobile" label="手机号"></el-table-column>
             <el-table-column prop="mobile" label="手机号"></el-table-column>
             <el-table-column label="社保参保状态" width="200" fixed="right">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-switch
                   v-model="scope.row.socialStatus"
                   :active-value="1"
+                  @change="setStatus(scope.row,'socialStatus')"
                   :inactive-value="2"
                   active-color="#13ce66"
                   inactive-text="待参保"
@@ -159,12 +160,13 @@
               </template>
             </el-table-column>
             <el-table-column label="公积金参保状态" width="200" fixed="right">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-switch
                   v-model="scope.row.fundStatus"
                   :active-value="1"
                   :inactive-value="2"
                   active-color="#13ce66"
+                  @change="setStatus(scope.row,'fundStatus')"
                   inactive-text="待参保"
                   class="tablescope"
                   active-text="在保"
@@ -246,7 +248,7 @@
               width="180"
             ></el-table-column>
             <el-table-column label="在职状态" width="180">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <span v-if="scope.row.status == 2">离职</span>
                 <span v-else>在职</span>
               </template>
@@ -260,7 +262,7 @@
               label="参保地"
             ></el-table-column>
             <el-table-column label="社保是否当地首次参保">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <span v-if="scope.row.socialIsFirst == 1">是</span>
                 <span v-else>否</span>
               </template>
@@ -274,7 +276,7 @@
               label="社保缴纳基数"
             ></el-table-column>
             <el-table-column label="社保缴纳方式">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <span v-if="scope.row.socialPayWay == 1">自缴</span>
                 <span v-else>代缴</span>
               </template>
@@ -296,7 +298,7 @@
               label="公积金参保地"
             ></el-table-column>
             <el-table-column label="公积金是否当地首次缴纳">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <span v-if="scope.row.fundIsFirst == 1">是</span>
                 <span v-else>否</span>
               </template>
@@ -314,7 +316,7 @@
               label="缴纳比例"
             ></el-table-column>
             <el-table-column label="公积金缴纳方式">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <span v-if="scope.row.fundPayWay == 1">自缴</span>
                 <span v-else>代缴</span>
               </template>
@@ -339,10 +341,11 @@
             <el-table-column prop="mobile" label="手机号"></el-table-column>
             <el-table-column prop="mobile" label="手机号"></el-table-column>
             <el-table-column label="社保停保状态" width="200" fixed="right">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-switch
                   v-model="scope.row.socialStopStatus"
                   :active-value="1"
+                  @change="setStatus(scope.row,'socialStopStatus')"
                   :inactive-value="2"
                   active-color="#13ce66"
                   inactive-text="办理中"
@@ -354,13 +357,14 @@
               </template>
             </el-table-column>
             <el-table-column label="公积金停保状态" width="200" fixed="right">
-              <template scope="scope">
+              <template slot-scope="scope">
                 <el-switch
                   v-model="scope.row.fundStopStatus"
                   :active-value="1"
                   :inactive-value="2"
                   active-color="#13ce66"
                   inactive-text="办理中"
+                  @change="setStatus(scope.row,'fundStopStatus')"
                   class="tablescope"
                   active-text="办理完成"
                   inactive-color="#ff4949"
@@ -387,7 +391,7 @@
 
     <!-- 社保公积金 -->
     <el-dialog title="社保公积金" :visible.sync="editVisible" width="70%">
-      <el-form ref="form" :model="form" label-width="220px">
+      <el-form ref="form" :model="form" label-width="180px">
         <el-row>
           <el-col :span="8">
             <el-form-item label="员工姓名:">
@@ -417,7 +421,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="社保户籍性性质（农村，城市）:">
+            <el-form-item label="社保户籍性性质:">
               <el-input v-model="form.socialRegistrationType"></el-input>
             </el-form-item>
           </el-col>
@@ -666,6 +670,17 @@ export default {
     handleTabsClick(e) {
       console.log(e);
     },
+    setStatus(e,field){
+      //更新用户
+      console.log(e);
+      let form = {
+        id: e.id,
+      };
+      form[field]=e[field];
+      console.log(form);
+      updateSocia(form).then((res) => console.log(res.message));
+    }
+    
   },
 };
 </script>

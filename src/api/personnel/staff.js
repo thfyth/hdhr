@@ -295,3 +295,7 @@ export function getUserContract(data) {
 export function getAttendInfo(data) {
     return get('employee/attend/getAttendDetail',data);
 }
+//新增离职员工
+export function addLeaveStaff(data) {
+    return put('employee/leave/insert?empIdList='+data);
+}

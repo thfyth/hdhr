@@ -293,9 +293,6 @@ export default {
     },
     // 增加合同模板
     addQuery() {
-      // vm.$router.push({
-      //   path: "/personnel/laborContract/addTemp/0"
-      // });
       vm.option = true
       vm.uploadData = {
         employeeId: '',

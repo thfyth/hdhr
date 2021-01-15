@@ -4,7 +4,7 @@ const router = (path) => {
       path: `/${path}`,
       name: `${path}`,
       component: resolve => require(['../index.vue'], resolve),
-      meta: { title: '仪表盘' }
+      meta: { title: '首页' }
     }
   ]
 }

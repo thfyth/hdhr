@@ -3,6 +3,7 @@
     <div class="org-box">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="组织管理" name="first">
+          <el-button @click="updataOrgDing">更新组织</el-button>
           <div class="table-box">
             <table-view
               :table-data="treeData"
@@ -119,6 +120,7 @@ import {
   updateManOrg,
   getHistory,
   delOneManOrg,
+  updataDingOrg
 } from "@/api/management/orgManage";
 import { getAttrMenu } from "@/api/attrManage";
 import "vue-organization-chart/dist/orgchart.css";
@@ -412,6 +414,20 @@ export default {
       this.historyQuery.pageSize = e;
       this.getHistorys();
     },
+    //更新钉钉组织
+    updataOrgDing(){
+      try {
+        updataDingOrg().then(res=>{
+        if(res.code === 0){
+          this.$message.success(res.message)
+        }else{
+          this.$message.error(res.message)
+        }
+      })
+      } catch (error) {
+          this.$message.error("异常错误")
+      } 
+    }
   },
 };
 </script>

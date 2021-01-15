@@ -566,7 +566,8 @@ export default {
       const org = getBayIdManOrg(this.orgQuery)
       const post = getPost(this.postQuery)
       const rank = getRank(this.rankQuery)
-      const tree = findOrgTree()
+      const isLeave=3;
+      const tree = findOrgTree({isLeave})
       const emTotal = getTotal()
       Promise.all([org, rank, post, tree, emTotal]).then(
         res => (
