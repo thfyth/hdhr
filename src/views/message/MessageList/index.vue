@@ -68,7 +68,12 @@
             <span @click="getOneInfo(scope.row)" class="article" v-text="scope.row.msgName"></span>
           </template>
         </el-table-column>
-        <el-table-column prop="msgContent" label="内容"> </el-table-column>
+        <el-table-column label="内容">
+          <template slot-scope="{row}">
+            <p v-text="row.msgContent" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+            </p>
+          </template>
+        </el-table-column>
         <el-table-column prop="msgContent" width="100" label="状态"> 
           <template slot-scope="scope">
             <span v-if="scope.row.replied == 0">未读</span>

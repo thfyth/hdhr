@@ -24,7 +24,7 @@ export default {
         realName: null
       },
       total: 0,
-       tableLabel: [
+      tableLabel: [
         {
           label: '请假记录Id',
           param: 'recordId',

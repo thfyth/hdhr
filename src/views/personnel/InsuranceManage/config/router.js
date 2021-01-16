@@ -2,9 +2,9 @@ const router = (path) => {
   return [
     {
       path: `/${path}`,
-      name: `${path}`,
+      name: 'insuranceManage',
       component: resolve => require(['../index.vue'], resolve),
-      meta: { title: 'nested-menu1-menu1-2' }
+      meta: { title: '员工保险' }
     }
   ]
 }

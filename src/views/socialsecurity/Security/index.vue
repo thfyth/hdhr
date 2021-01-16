@@ -684,7 +684,7 @@ export default {
   },
 };
 </script>
-<style lang='scss' scope>
+<style lang='scss'>
 .article {
   color: Blue;
   cursor: pointer;

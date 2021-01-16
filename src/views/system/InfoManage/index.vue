@@ -195,6 +195,17 @@
             </template>
           </el-table-column>
         </el-table>
+        <div class="block pagination-box">
+            <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="10"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+            ></el-pagination>
+        </div>
       </div>
       <div class="model">
         <el-dialog title="消息详细" :visible.sync="dialogVisible" width="60%">
@@ -209,6 +220,7 @@
                     width="260"
                     height="230"
                     checkbox
+                    :defaultExpandAll="false"
                     node-key="orgId"
                     :data="userOption"
                     :props="props"
@@ -363,7 +375,9 @@ export default {
       receiverList: [],
       multipleSelection: '',
       dialogVisible1: false,
-      replyData: []
+      replyData: [],
+      total:0,
+      currentPage:10
     }
   },
   created() {
@@ -381,6 +395,15 @@ export default {
           vm.total = res.data.total
         }
       })
+    },
+    //分页
+    handleSizeChange(e){
+      vm.query.pageSize=e;
+      vm.getData()
+    },
+    handleCurrentChange(e){
+      vm.query.pageNumber=e;
+      vm.getData()
     },
     // 获取下拉框数据
     getMenu() {
