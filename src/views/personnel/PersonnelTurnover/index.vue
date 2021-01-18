@@ -315,7 +315,12 @@
               <tr>
                 <th>员工姓名</th>
                 <td>
-                  <span v-text="form.employeeName" />
+                   <el-autocomplete
+                    v-model="form.employeeName"
+                    placeholder="请输入内容"
+                    :fetch-suggestions="querySearchAsync"
+                    @select="handleSelect"
+                  />
                 </td>
                 <th>入职时间</th>
                 <td>
@@ -479,7 +484,7 @@
 
 <script>
 import tableView from '@/components/vTable.vue'
-import { getChange,updataChange,empChange } from '@/api/personnel/PersonnelTurnover'
+import { getChange,updataChange,empChange,addChange } from '@/api/personnel/PersonnelTurnover'
 import { selectAllDrop } from '@/api/user'
 import { getAttrMenu } from '@/api/attrManage'
 import { getPostInfo } from '@/api/management/postManage'
@@ -525,7 +530,8 @@ export default {
         emitPath: false
       },
       orgTreeData: [],
-      timeout: null
+      timeout: null,
+      option:true
     }
   },
   created() {
@@ -576,7 +582,11 @@ export default {
       that.getData()
     },
     getButton() {},
-    getOneInfo() {},
+    getOneInfo(e) {
+      that.form=e;
+      that.option=false;
+      that.dialogVisible = true
+    },
     handleCurrentChange() {},
     handleSizeChange() {},
     dataPicker(e) {
@@ -588,6 +598,7 @@ export default {
       that.form = {
         changeTempType: 0
       }
+      that.option=true;
       that.dialogVisible = true
     },
     // 获取选择的组织
@@ -612,18 +623,21 @@ export default {
     },
     // 提交
     submit() {
-      let post;
-      post=updataChange(that.form)
-      post.then(res=>{
+      let data;
+      if(that.option){
+        data=addChange(that.form);
+      }else{
+        data=updataChange(that.form)
+      }
+      data.then(res=>{
         if(res.code === 0){
           that.getData();
-          that.$message.success(res.msg)
+          that.$message.success(res.message)
           that.dialogVisible=false;
+        }else{
+          that.$message.error(res.message)
         }
       })
-    },
-    getOneInfo(row) {
-      console.log(row)
     },
     // 选择
     handleSelect(item) {
