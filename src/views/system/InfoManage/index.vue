@@ -178,7 +178,7 @@
             <template slot-scope="{ row }">
               <el-button type="text" @click="getOneInfo(row)">查看</el-button>
               <el-button
-                v-if="row.sendWay == 3"
+                v-if="row.sendWay == 3 && row.msgStatus !== 2"
                 type="text"
                 @click="sendDingMsg(row)"
               >发送钉钉消息</el-button>
@@ -540,8 +540,8 @@ export default {
           // 删除信息
           delMsg({ idList }).then(res => {
             if (res.code === 0) {
-              vm.$message.success(res.message)
               vm.getData()
+              vm.$message.success(res.message)
             } else {
               vm.$message.error(res.message)
             }
@@ -554,6 +554,7 @@ export default {
       const { msgId } = e
       sendDingMsgs({ msgId }).then(res => {
         if (res.code === 0) {
+            vm.getData()
           vm.$message.success(res.message)
         } else {
           vm.$message.error(res.message)
@@ -565,6 +566,7 @@ export default {
       const { msgId } = e
       reCallDingMsgs({ msgId }).then(res => {
         if (res.code === 0) {
+            vm.getData()
           vm.$message.success(res.message)
         } else {
           vm.$message.error(res.message)

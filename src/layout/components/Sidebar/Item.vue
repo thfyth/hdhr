@@ -17,7 +17,7 @@ export default {
     const vnodes = []
 
     if (icon) {
-      vnodes.push(<svg-icon icon-class={icon}/>)
+      vnodes.push(<i class={icon}/>)
     }
 
     if (title) {
@@ -27,3 +27,13 @@ export default {
   }
 }
 </script>
+
+
+<style lang="scss" scoped>
+  .el-menu-item [class^=el-icon-]{
+    font-size: 14px;
+  }
+   .sidebar-container .is-active i {
+    color: #409eff!important;
+  }
+</style>

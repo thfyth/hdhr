@@ -47,8 +47,15 @@
         </div>
       </div>
       <div class="titles-list">
-        <el-button class="add" @click="addTur">添加</el-button>
+        
+          <div class="button-box">
+              <el-button class="add" @click="addTur">添加</el-button>
+            </div> 
+             <div class="button-box">
+              <el-button class="del" @click="allDel">删除</el-button>
+            </div>
       </div>
+      
     </div>
     <div class="table-box">
       <el-table
@@ -56,10 +63,14 @@
         style="width: 100%"
         element-loading-text="Loading"
         tooltip-effect="dark"
+        @selection-change="handleSelectionChange"
         formatter
         border
         :header-cell-style="{ background: '#F7F8FA', color: '#293B59' }"
       >
+       <el-table-column
+        type="selection"
+        width="55" />
         <el-table-column type="index" label="序号" width="50" />
         <el-table-column label="员工名称">
           <template slot-scope="scope">
@@ -70,42 +81,12 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="异动后公司id">
-          <template slot-scope="scope">
-            <el-cascader
-              v-model="scope.row.changeCompanyId"
-              :options="orgTreeData"
-              :props="orgProps"
-              placeholder=""
-              disabled
-              :show-all-levels="false"
-            />
-          </template>
-        </el-table-column>
-        <el-table-column label="异动后组织或部门">
-          <template slot-scope="scope">
-            <el-cascader
-              v-model="scope.row.changeOrgId"
-              :options="orgTreeData"
-              :props="orgProps"
-              disabled
-              placeholder=""
-              :show-all-levels="false"
-            />
-          </template>
-        </el-table-column>
-        <el-table-column label="异动后职位">
-          <template slot-scope="scope">
-            <el-select v-model="scope.row.changePostId" disabled placeholder="">
-              <el-option
-                v-for="item in postData"
-                :key="item.postId"
-                :label="item.postName"
-                :value="item.postId"
-              />
-            </el-select>
-          </template>
-        </el-table-column>
+        <el-table-column label="原公司" prop="changeBeforeCompanyName"></el-table-column>
+        <el-table-column label="原部门" prop="changeBeforeOrgName"></el-table-column>
+        <el-table-column label="原职位" prop="changeBeforePostName"></el-table-column>
+        <el-table-column label="异动后公司" prop="changeCompanyName"></el-table-column>
+        <el-table-column label="异动后部门" prop="changeOrgName"></el-table-column>
+        <el-table-column label="异动后职位" prop="changePostName"></el-table-column>
         <el-table-column prop="changeExplain" label="异动说明" />
         <el-table-column label="异动状态">
           <template slot-scope="scope">
@@ -122,7 +103,7 @@
         </el-table-column>
         <el-table-column label="异动类型">
           <template slot-scope="scope">
-            <span v-text="scope.row.changeType" />
+            <span v-text="scope.row.changeTypeName" />
           </template>
         </el-table-column>
         <el-table-column prop="changeDate" label="异动时间" />
@@ -137,12 +118,16 @@
         @handleSizeChange="handleSizeChange"
         :total="total"
       ></table-view> -->
-      <el-pagination
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="10"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      />
+      <div class="block pagination-box">
+        <el-pagination
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="10"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+           @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+        />
+      </div>
     </div>
     <div class="model">
       <el-dialog :visible.sync="dialogVisible" width="80%">
@@ -190,25 +175,11 @@
                 </td>
                 <th>部门</th>
                 <td>
-                  <el-cascader
-                    ref="orgIdCascader"
-                    v-model="form.orgId"
-                    :options="orgTreeData"
-                    :props="orgProps"
-                    :show-all-levels="false"
-                    @change="getOrg"
-                  />
+                  <span v-text="form.changeBeforeOrgName"></span>
                 </td>
                 <th>职位</th>
                 <td>
-                  <el-select v-model="form.postId" placeholder="">
-                    <el-option
-                      v-for="item in postData"
-                      :key="item.postId"
-                      :label="item.postName"
-                      :value="item.postId"
-                    />
-                  </el-select>
+                  <span v-text="form.changeBeforePostName"></span>
                 </td>
                 <th>异动生效时间</th>
                 <td>
@@ -240,14 +211,7 @@
                   异动前职位
                 </th>
                 <td>
-                  <el-select v-model="form.changeBeforePostId" placeholder="">
-                    <el-option
-                      v-for="item in postData"
-                      :key="item.postId"
-                      :label="item.postName"
-                      :value="item.postId"
-                    />
-                  </el-select>
+                  <span v-text="form.changeBeforePostName"></span>
                 </td>
                 <th>
                   异动后职位
@@ -324,12 +288,7 @@
                 </td>
                 <th>入职时间</th>
                 <td>
-                  <el-date-picker
-                    v-model="form.entryDate"
-                    value-format="yyyy-MM-dd"
-                    format="yyyy 年 MM 月 dd 日"
-                    type="date"
-                  />
+                  <span v-text="form.entryDate"></span>
                 </td>
                 <th>司龄</th>
                 <td>
@@ -377,32 +336,14 @@
                 </th>
               </tr>
               <tr>
-                <td colspan="3">
-                  <el-cascader
-                    v-model="form.changeBeforeCompanyId"
-                    :options="orgTreeData"
-                    :props="orgProps"
-                    :show-all-levels="false"
-                  />
+                <td colspan="3" style="line-height: 40px;">
+                  <span v-text="form.changeBeforeCompanyName"></span>
                 </td>
                 <td colspan="3">
-                  <el-cascader
-                    v-model="form.changeBeforeOrgId"
-                    :options="orgTreeData"
-                    :props="orgProps"
-                    :show-all-levels="false"
-                    @change="getOrg"
-                  />
+                  <span v-text="form.changeBeforeOrgName"></span>
                 </td>
                 <td colspan="2">
-                  <el-select v-model="form.changeBeforePostId" placeholder="">
-                    <el-option
-                      v-for="item in postData"
-                      :key="item.postId"
-                      :label="item.postName"
-                      :value="item.postId"
-                    />
-                  </el-select>
+                  <span v-text="form.changeBeforePostName"></span>
                 </td>
               </tr>
               <tr>
@@ -469,25 +410,16 @@
           <el-button type="primary" @click="submit">确 定</el-button>
         </span>
       </el-dialog>
-
-      <!-- changeId	string
-异动记录id -->
-
-      <!-- changeOrgIdAll	string
-异动后组织所有id -->
-
-      <!-- changeTempType	integer($int32)
-异动模板类型（0本公司，1.跨公司） -->
     </div>
   </div>
 </template>
 
 <script>
 import tableView from '@/components/vTable.vue'
-import { getChange,updataChange,empChange,addChange } from '@/api/personnel/PersonnelTurnover'
+import { getChange,updataChange,empChange,addChange,delChange } from '@/api/personnel/PersonnelTurnover'
 import { selectAllDrop } from '@/api/user'
 import { getAttrMenu } from '@/api/attrManage'
-import { getPostInfo } from '@/api/management/postManage'
+import { getPostList } from '@/api/management/postManage'
 import { getBayIdManOrg } from '@/api/management/orgManage'
 import { perNames } from '@/api/personnel/staff'
 let that
@@ -531,12 +463,14 @@ export default {
       },
       orgTreeData: [],
       timeout: null,
-      option:true
+      option:true,
+      multipleSelection:''
     }
   },
   created() {
     that = this
     that.getData()
+    that.getOrg()
   },
   methods: {
     getData() {
@@ -587,8 +521,14 @@ export default {
       that.option=false;
       that.dialogVisible = true
     },
-    handleCurrentChange() {},
-    handleSizeChange() {},
+    handleCurrentChange(e) {
+      that.query.pageNumber=e;
+      that.getData();
+    },
+    handleSizeChange(e) {
+      that.query.pageSize=e;
+      that.getData();
+    },
     dataPicker(e) {
       that.query.changeDateStart = e[0]
       that.query.changeDateEnd = e[1]
@@ -602,17 +542,17 @@ export default {
       that.dialogVisible = true
     },
     // 获取选择的组织
-    getOrg(e) {
+    getOrg() {
       // 岗位
       const query = {
-        orgId: e,
+        orgId: null,
         pageNumber: '1',
         pageSize: '10',
         postCode: null,
         postName: null
       }
-      getPostInfo(query).then(res => {
-        that.postData = res.data.records
+      getPostList(query).then(res => {
+        that.postData = res.data
       })
     },
     // 切换模板
@@ -646,9 +586,22 @@ export default {
       that.form.employeeName = item.value
       empChange({empId:item.employeeId})
       .then(res=>{
-        console.log(res);
+        if(res.code === 0){
+          const { companyName,orgName,postName,company,orgId,postId,seniority,entryDate }=res.data;
+          that.$set(that.form, "changeBeforeCompanyName", companyName || '无');
+          that.$set(that.form, "changeBeforeOrgName", orgName || '无');
+          that.$set(that.form, "changeBeforePostName", postName || '无');
+          that.$set(that.form, "changeBeforeCompanyId", company || null);
+          that.$set(that.form, "changeBeforeOrgId", orgId);
+          that.$set(that.form, "changeBeforePostId", postId);
+          that.$set(that.form, "seniority", seniority || 0);
+          that.$set(that.form, "entryDate", entryDate || null);
+          
+
+        }
       })
     },
+
     // 输入建议
     querySearchAsync(queryString, cb) {
       const data = {
@@ -674,6 +627,41 @@ export default {
         }
       })
       // console.log(data);
+    },
+    //多选
+    handleSelectionChange(e){
+       let arr = "";
+      // multipleSelection
+      e.forEach((v) => {
+        arr += v.changeId + ",";
+      });
+      that.multipleSelection = arr;
+    },
+    //删除
+    allDel(){
+      const changIdList = that.multipleSelection;
+      if (changIdList.length<5) {
+        that.$message.error("请选择一个职位进行删除");
+        return;
+      }
+      that
+        .$confirm("此操作将会删除异动, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+        .then(() => {
+          //删除信息
+          delChange({ changIdList }).then((res) => {
+            if (res.code === 0) {
+              that.$message.success(res.message);
+              that.getData();
+            } else {
+              that.$message.error(res.message);
+            }
+          });
+        })
+        .catch((err) => {});
     }
   }
 }

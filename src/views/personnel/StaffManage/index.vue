@@ -856,7 +856,8 @@ export default {
       }
       const { employeeId } = row
       this.$router.push({
-        path: `/personnel/staffInfo/staffOneInfo/${employeeId}`
+        path: `/personnel/staffOneInfo/${employeeId}`
+        // path: `/personnel/staffInfo/staffOneInfo/${employeeId}`
       })
     },
     // 点击用户名跳转

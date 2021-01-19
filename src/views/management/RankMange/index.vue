@@ -43,7 +43,7 @@
         <el-form-item label="职级名称:" :required="true">
           <el-input v-model="form.rankName"></el-input>
         </el-form-item>
-        <el-form-item label="对应岗位(可多选):">
+        <el-form-item label="对应岗位(可多选):" :required="true">
           <el-select
             style="width:100%"
             value-key="postId"

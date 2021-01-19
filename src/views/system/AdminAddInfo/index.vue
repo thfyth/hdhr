@@ -74,7 +74,12 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            </el-row>
+
+            
+          </el-row>
+          <el-form-item label="菜单图标:" :required="true">
+                <el-input v-model="form.menuIcon"></el-input>
+              </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="editVisible = false">取 消</el-button>

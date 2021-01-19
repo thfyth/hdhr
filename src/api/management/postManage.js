@@ -21,3 +21,7 @@ export function getPostInfo(data) {
     return post('user/post/selectAll',data);
 }
 
+export function getPostList(data) {
+    return post('user/post/selectPost',data);
+}
+

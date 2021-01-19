@@ -162,10 +162,9 @@ export default {
     getData() {
       const dateConditions = parseInt(vm.activeName)
       const requerst0 = getReport({ dateConditions })
-      const requerst1 = getIndexCount({ nowValue:null })
+      const requerst1 = getIndexCount({ nowValue: vm.dateFormat("YYYY-mm-dd"), })
       vm.tableData=[];
       Promise.all([requerst0, requerst1]).then(res => {
-        console.log(res)
         if (res[0].code === 0) {
           vm.tableData = res[0].data
           vm.numForm=res[1].data
@@ -197,7 +196,7 @@ export default {
         query = {
           pageNumber: 1,
           pageSize: 20,
-          nowValue: vm.dateFormat("YYYY-mm"),
+          nowValue: vm.dateFormat("YYYY-mm-dd"),
           type: 1
         }
       }

@@ -4,9 +4,11 @@
       <el-tab-pane label="个人信息" name="staffInfo">
         <div class="title">
           <span class="title-header">个人基本信息</span>
-          <span v-if="option" class="font" @click="getStaffInfo">取 消</span>
-          <span v-if="option" class="font" @click="updataStaff">保 存</span>
-          <span v-else class="font" @click="setStaffInfo">编 辑</span>
+          <div style="display:inline-block" v-if="userType">
+            <span v-if="option" class="font" @click="getStaffInfo">取 消</span>
+            <span v-if="option" class="font" @click="updataStaff">保 存</span>
+            <span v-else class="font" @click="setStaffInfo">编 辑</span>
+          </div>
         </div>
         <div class="staffinfo-box">
           <el-form ref="form" :model="form" label-width="140px">
@@ -1180,9 +1182,11 @@
       <el-tab-pane label="在职信息" name="information">
         <div class="title">
           <span class="title-header">在职信息</span>
-          <span v-if="option" class="font" @click="getStaffInfo">取消</span>
-          <span v-if="option" class="font" @click="updataStaff">保存</span>
-          <span v-else class="font" @click="setStaffInfo">编辑</span>
+          <div style="display:inline-block" v-if="userType">
+            <span v-if="option" class="font" @click="getStaffInfo">取 消</span>
+            <span v-if="option" class="font" @click="updataStaff">保 存</span>
+            <span v-else class="font" @click="setStaffInfo">编 辑</span>
+          </div>
         </div>
         <el-form ref="form" :model="form" label-width="140px" border>
           <table
@@ -1403,9 +1407,11 @@
       <el-tab-pane label="五险一金" name="insurances">
         <div class="title">
           <span class="title-header">五险一金</span>
-          <span v-if="option" class="font" @click="getStaffInfo">取消</span>
-          <span v-if="option" class="font" @click="updataInsurances">保存</span>
-          <span v-else class="font" @click="setStaffInfo">编辑</span>
+          <div style="display:inline-block" v-if="userType">
+            <span v-if="option" class="font" @click="getStaffInfo">取 消</span>
+            <span v-if="option" class="font" @click="updataInsurances">保 存</span>
+            <span v-else class="font" @click="setStaffInfo">编 辑</span>
+          </div>
         </div>
         <el-form>
           <table
@@ -1429,10 +1435,10 @@
               </td>
             </tr>
             <tr>
-              <th>社保参保状态</th>
-              <td>
+              <!-- <th>社保参保状态</th> -->
+              <!-- <td>
                 <el-input :disabled="!option" v-model="socialForm.socialStatusName" />
-              </td>
+              </td> -->
               <th>社保户籍性性质</th>
               <td>
                 <el-input :disabled="!option" v-model="socialForm.socialRegistrationType" />
@@ -1441,20 +1447,9 @@
               <td>
                 <el-input :disabled="!option" v-model="socialForm.socialAddress" />
               </td>
-            </tr>
-            <tr>
               <th>社保缴纳基数</th>
               <td>
                 <el-input :disabled="!option" v-model="socialForm.socialPayBase" />
-              </td>
-              <th>公积金参保状态</th>
-              <td>
-                <el-input :disabled="!option" v-model="socialForm.fundStatusName" />
-                
-              </td>
-              <th>公积金编号</th>
-              <td>
-                <el-input :disabled="!option" v-model="socialForm.fundCode" />
               </td>
             </tr>
             <tr>
@@ -1470,6 +1465,18 @@
               <th>公积金缴纳基数</th>
               <td>
                 <el-input :disabled="!option" v-model="socialForm.fundPayBase" />
+              </td>
+            </tr>
+             <tr>
+              
+              <!-- <th>公积金参保状态</th> -->
+              <!-- <td>
+                <el-input :disabled="!option" v-model="socialForm.fundStatusName" />
+                
+              </td> -->
+              <th>公积金编号</th>
+              <td>
+                <el-input :disabled="!option" v-model="socialForm.fundCode" />
               </td>
             </tr>
           </table>
@@ -2465,7 +2472,9 @@ export default {
           value: 'day'
         }
       ],
-      attendData: []
+      attendData: [],
+      //员工类型 true为在职，false为离职
+      userType:true,
     }
   },
   created() {
@@ -2488,18 +2497,38 @@ export default {
           .then(res => {
             console.log(res)
             if (res.code === 0) {
-              that.form = res.data.employeeBaseInfo
-              that.eduData = res.data.employeeEduList
-              that.jobData = res.data.employeeJobList
-              that.contactsData = res.data.employeeContactList
-              that.famyData = res.data.employeeFamilyList
-              that.titleData = res.data.employeeTitleList
-              that.ccieData = res.data.employeeCcieList
-              that.trainData = res.data.employeeTrainList
-              that.langData = res.data.employeeLanguageList
-              that.punData = res.data.employeePunishmentList
-              that.rewData = res.data.employeeRewardList
+              const {
+                employeeBaseInfo,
+                employeeEduList,
+                employeeJobList,
+                employeeContactList,
+                employeeFamilyList,
+                employeeTitleList,
+                employeeCcieList,
+                employeeTrainList,
+                employeeLanguageList,
+                employeePunishmentList,
+                employeeRewardList
+              } = res.data
+              that.form = employeeBaseInfo || {}
+              that.eduData = employeeEduList
+              that.jobData = employeeJobList
+              that.contactsDadata=employeeContactList
+              that.famyData = employeeFamilyList
+              that.titleData = employeeTitleList
+              that.ccieData = employeeCcieList
+              that.trainData = employeeTrainList
+              that.langData = employeeLanguageList
+              that.punData = employeePunishmentList
+              that.rewData = employeeRewardList
               that.operation = true
+              console.log(employeeBaseInfo.status);
+              if(employeeBaseInfo.status == 2){
+                that.userType=true
+              }else{
+                 that.userType=false
+              }
+              
               // that.form.photo=null
               if (res.data.photo) {
                 that.imgFolat = true

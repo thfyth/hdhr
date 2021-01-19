@@ -42,7 +42,7 @@ const dynamicRouter = (routerMap, parent) => {
   
         meta: {
           title: title,
-          icon: icon || undefined,
+          icon: item.menuIcon || undefined,
           breadcrumb: breadcrumb,
           activeMenu: activeMenu,
           affix: affix === true,

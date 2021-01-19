@@ -330,7 +330,6 @@ export default {
     },
     //点击获取岗位
     getOrg(e) {
-      console.log(e);
       const { orgId, orgName, parentIdAll } = e;
       if (parentIdAll) {
         this.query.orgIdAll = parentIdAll + "," + orgId;
@@ -353,7 +352,7 @@ export default {
     //监听table组件按钮事件
     getButton(e, info) {
       const that = this;
-      this.roleIdList = [];
+      that.roleIdList = [];
       that.userIdList = [];
       if (e == "edit") {
         //查询用户详细信息
@@ -451,7 +450,7 @@ export default {
         return false;
       }
       const idList = that.multipleSelection;
-      if (idList == null) {
+      if (idList == '') {
         that.$message.error("请选择一个职位进行删除");
         return;
       }
