@@ -202,7 +202,7 @@
                     v-model="form.gdDate"
                     :disabled="!option"
                     value-format="yyyy-MM-dd"
-                    format="yyyy 年 MM 月 dd 日"
+                    format="yyyy-MM-dd"
                     type="date"
                   />
                 </td>

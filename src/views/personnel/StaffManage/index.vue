@@ -33,6 +33,7 @@
               <el-input
                 placeholder="姓名"
                 style="width: 200px"
+                v-model="employeeQuery.employeeName"
                 clearable
               />
             </div>

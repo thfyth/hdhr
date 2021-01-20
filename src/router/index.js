@@ -39,6 +39,17 @@ export const constantRoutes = [
         meta: { title: '工作台', icon: 'el-icon-home', affix: true }
       }
     ]
+  },{
+    path: '/bigScreen',
+    component: Layout,
+    children: [
+      {
+        path: '/bigScreen',
+        component: () => import(/* webpackChunkName: "dashboard" */'@/views/bigScreen/index'),
+        name: 'bigScreen',
+        meta: { title: '大屏', icon: 'el-icon-home', affix: true }
+      }
+    ]
   },
   {
     path: '/redirect',

@@ -1,6 +1,23 @@
 <template>
   <div class="main">
     <div class="title-box" style="width: auto">
+      <div class="title-list">
+            <div class="list-box">
+              <span class="title">字典名称</span>
+              <el-input
+                placeholder="字典名称"
+                style="width: 200px"
+                v-model="valueSetQuery.valueName"
+                clearable
+              />
+            </div>
+            <div class="list-box">
+              <el-button class="insert" @click="getData">查询</el-button>
+            </div>
+            <div class="list-box">
+              <el-button class="resetting" @click="runReset">重置</el-button>
+            </div>
+      </div>
       <div class="titles-list">
         <div class="button-box">
           <el-button
@@ -59,7 +76,7 @@
             >新增属性</el-button
           >
         </div>
-        <el-table :data="valueAttrTableData" border style="width: 100%">
+        <el-table :data="valueAttrTableData" border style="width: 100%" height="350px">
           <el-table-column prop="attrName" label="属性名"> </el-table-column>
           <el-table-column prop="attrCode" label="属性编码"> </el-table-column>
           <el-table-column prop="attrValue" label="属性值" width="80"> </el-table-column>
@@ -201,6 +218,16 @@ export default {
           (this.tableData = res.data.records), (this.total = res.data.total)
         )
       );
+    },
+    //重置
+    runReset(){
+       this.valueSetQuery={
+        pageNumber: 1,
+        pageSize: 10,
+        valueCode: null,
+        valueName: null,
+      }
+      this.getData()
     },
     hasButtons(data) {
       return isButtons(data);
