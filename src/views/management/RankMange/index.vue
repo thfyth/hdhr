@@ -43,7 +43,7 @@
         <el-form-item label="职级名称:" :required="true">
           <el-input v-model="form.rankName"></el-input>
         </el-form-item>
-        <el-form-item label="对应岗位(可多选):" :required="true">
+        <!-- <el-form-item label="对应岗位(可多选):" :required="true">
           <el-select
             style="width:100%"
             value-key="postId"
@@ -62,12 +62,7 @@
               <span>{{item.postName}}</span>
             </el-option>
           </el-select>
-          <!-- <el-select v-model="form.postList" placeholder="请选择" multiple collapse-tags>
-      <el-option  :value="mineStatusValue" style="height: auto">//option展开高度太小，把height设置为auto就好啦
-       	<el-tree :data="treeData" show-checkbox node-key="id" ref="tree" highlight-current :props="defaultProps" @check-change="handleCheckChange"></el-tree>
-	  </el-option>
-          </el-select>-->
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="描述:">
           <el-input v-model="form.rankDesc"></el-input>
         </el-form-item>

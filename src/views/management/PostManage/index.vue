@@ -392,7 +392,7 @@ export default {
             addOnePost(that.form).then(
               (res) => (
                 that.$message.info(res.message),
-                that.runReset(),
+                that.getData(),
                 (that.editVisible = false)
               )
             );

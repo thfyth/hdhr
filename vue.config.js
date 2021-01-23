@@ -60,7 +60,7 @@ module.exports = {
         //压缩算法
         algorithm: 'gzip',
         //匹配文件
-        test: /\.js$|\.css$|\.jpg$/,
+        test: /\.js$|\.css$|\.jpg$|\.ttf$|\.png$/,
         //压缩超过此大小的文件,以字节为单位
         threshold: 5200,
         minRatio: 0.8,
