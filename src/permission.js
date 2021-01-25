@@ -7,23 +7,18 @@ import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
 
-NProgress.configure({ showSpinner: false }) // NProgress Configuration
+NProgress.configure({ showSpinner: false })
 
-const whiteList = ['/login'] // no redirect whitelist
+const whiteList = ['/login']
 
 router.beforeEach(async (to, from, next) => {
-  // start progress bar
   NProgress.start()
-
-  // set page title
   document.title = getPageTitle(to.meta.title)
 
-  // determine whether the user has logged in
   const hasToken = getToken()
 
   if (hasToken) {
     if (to.path === '/login') {
-      // if is logged in, redirect to the home page
       next({ path: '/' })
       NProgress.done()
     } else {
@@ -34,7 +29,11 @@ router.beforeEach(async (to, from, next) => {
         try {
           await store.dispatch('user/getInfo')
           await store.dispatch('user/getMenu')
-          store.dispatch('permission/GenerateRoutes', store.getters.menus).then(res => {
+         
+          //设置带按钮的菜单 //主要为了tags正常显示，
+          store.dispatch('permission/GenerateRoutes', store.getters.menus);
+           //设置不带按钮的菜单
+          store.dispatch('permission/GenerateNoBtnRoutes', store.getters.noBtnMenuList).then(res => {
             if (res.length > 0) {
               router.addRoutes(res) // 动态添加可访问路由表
             }
@@ -42,7 +41,6 @@ router.beforeEach(async (to, from, next) => {
           })
         } catch (error) {
           // console.log("出错");
-          // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
           // Message.error(error || '网络错误')
           next(`/login?redirect=${to.path}`)
@@ -52,12 +50,9 @@ router.beforeEach(async (to, from, next) => {
     }
   } else {
     /* has no token*/
-
     if (whiteList.indexOf(to.path) !== -1) {
-      // in the free login whitelist, go directly
       next()
     } else {
-      // other pages that do not have permission to access are redirected to the login page.
       next(`/login?redirect=${to.path}`)
       NProgress.done()
     }
@@ -65,6 +60,5 @@ router.beforeEach(async (to, from, next) => {
 })
 
 router.afterEach(() => {
-  // finish progress bar
   NProgress.done()
 })

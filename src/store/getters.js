@@ -15,6 +15,7 @@ const getters = {
   count:state=>state.user.count,
   staus:state=>state.user.staus,
   errMsg:state=>state.user.errMsg,
-  
+  //不包含按钮的菜单
+  noBtnMenuList:state=>state.user.noBtnMenuList,
 }
 export default getters

@@ -7,7 +7,7 @@ module.exports = {
    * @description Whether need tagsView
    */
   //显示tags
-  // tagsView: true,
+  tagsView: true,
 
   /**
    * @type {boolean} true | false

@@ -17,3 +17,4 @@ export function selectHoliday(data) {
 export function updataHoliday(data) {
     return put('employee/holiday/update',data);
 }
+

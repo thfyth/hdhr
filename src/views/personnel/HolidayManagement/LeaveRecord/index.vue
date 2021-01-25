@@ -1,5 +1,15 @@
 <template>
   <div class="main">
+    <div class="title-box" style="width: auto">
+      <div class="titles-list">
+        <div class="button-box">
+          <el-button
+            class="btn-updata"
+            @click="updataHoilday"
+          >更新请假记录</el-button>
+        </div>
+      </div>
+    </div>
     <div class="table-view">
       <table-view :total="total" :table-label="tableLabel" :table-data="tableData"
       @handleCurrentChange="handleCurrentChange"
@@ -11,7 +21,7 @@
 <script>
 let vm
 import tableView from '@/components/vTable'
-import { selectHoliday } from '@/api/personnel/holidayManagement'
+import { selectHoliday,getRecordList } from '@/api/personnel/holidayManagement'
 export default {
   components: { tableView },
   data() {
@@ -85,6 +95,18 @@ export default {
       vm.query.pageSize = e
       vm.getData()
     },
+    //更新节假日
+    updataHoilday(){
+      getRecordList()
+      .then(res=>{
+        if(res.code === 0){
+          vm.$message.success(res.message)
+          vm.getData()
+        }else{
+          vm.$message.error(res.message)
+        }
+      })
+    }
   }
 }
 </script>

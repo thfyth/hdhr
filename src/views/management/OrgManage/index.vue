@@ -3,24 +3,34 @@
     <div class="org-box">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="组织管理" name="first">
-          <el-button @click="updataOrgDing">更新组织</el-button>
+          <div class="title-box" style="width: auto">
+           <div class="titles-list">
+              <div class="button-box">
+              <el-button
+                class="btn-updata"
+                @click="updataOrgDing"
+              >更新组织</el-button>
+            </div>
+           </div>
+          </div>
+
           <div class="table-box">
             <table-view
               :table-data="treeData"
-              @handleButton="getButton"
-              @getOneData="getOneUser"
               :table-label="tableLabel"
               :table-option="tableOption"
+              :total="total"
+              :is-show-page="isShowPage"
+              :table-col-id="tableColId"
+              @handleButton="getButton"
+              @getOneData="getOneUser"
               @handleCurrentChange="handleCurrentChange"
               @handleSizeChange="handleSizeChange"
-              :total="total"
-              :isShowPage="isShowPage"
-              :tableColId="tableColId"
-            ></table-view>
+            />
           </div>
         </el-tab-pane>
         <el-tab-pane label="组织架构图" name="second">
-         <organization-chart :datasource="TreeDatas" :pan="true" :zoom="true">
+          <organization-chart :datasource="TreeDatas" :pan="true" :zoom="true">
             <template slot-scope="{ nodeData }">
               <div class="title" :class="'title-' + nodeData.orgType">
                 <div class="title-box-node">
@@ -28,7 +38,7 @@
                     {{ nodeData.orgShortName }}
                   </div>
                 </div>
-                <div class="title-border"></div>
+                <div class="title-border" />
               </div>
             </template>
           </organization-chart>
@@ -37,12 +47,12 @@
           <div class="table-box">
             <table-view
               :table-data="tableData"
-              @getOneData="getOneInfo"
               :table-label="tableLabel1"
+              :total="total1"
+              @getOneData="getOneInfo"
               @handleCurrentChange="handleCurrentChange1"
               @handleSizeChange="handleSizeChange1"
-              :total="total1"
-            ></table-view>
+            />
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -59,14 +69,15 @@
                   {{ nodeData.orgShortName }}
                 </div>
               </div>
-              <div class="title-border"></div>
+              <div class="title-border" />
             </div>
           </template>
         </organization-chart>
         <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="editVisible1 = false"
-            >关 闭</el-button
-          >
+          <el-button
+            type="primary"
+            @click="editVisible1 = false"
+          >关 闭</el-button>
         </span>
       </el-dialog>
       <el-dialog title="组织管理" :visible.sync="editVisible" width="60%">
@@ -74,17 +85,17 @@
           <el-row>
             <el-col :span="6">
               <el-form-item label="组织名称:" :required="true">
-                <el-input v-model="form.orgName"></el-input>
+                <el-input v-model="form.orgName" />
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="组织简称 :" :required="true">
-                <el-input v-model="form.orgShortName"></el-input>
+                <el-input v-model="form.orgShortName" />
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="组织编码 :" :required="true">
-                <el-input v-model="form.orgCode"></el-input>
+                <el-input v-model="form.orgCode" />
               </el-form-item>
             </el-col>
             <el-col :span="6">
@@ -95,7 +106,7 @@
                     :key="item.attrValue"
                     :label="item.attrName"
                     :value="item.attrValue"
-                  ></el-option>
+                  />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -110,10 +121,9 @@
   </div>
 </template>
 
-
 <script>
-import tableView from "@/components/vTable.vue";
-import OrganizationChart from "vue-organization-chart";
+import tableView from '@/components/vTable.vue'
+import OrganizationChart from 'vue-organization-chart'
 import {
   getBayIdManOrg,
   addOneManOrg,
@@ -121,315 +131,315 @@ import {
   getHistory,
   delOneManOrg,
   updataDingOrg
-} from "@/api/management/orgManage";
-import { getAttrMenu } from "@/api/attrManage";
-import "vue-organization-chart/dist/orgchart.css";
+} from '@/api/management/orgManage'
+import { getAttrMenu } from '@/api/attrManage'
+import 'vue-organization-chart/dist/orgchart.css'
 // import 'vue-orgchart/dist/style.min.css'
-import { isButtons } from "@/utils/button";
+import { isButtons } from '@/utils/button'
 export default {
+  components: {
+    tableView,
+    // treeCharts,
+    OrganizationChart
+  },
   data() {
     return {
-      activeName: "first",
+      activeName: 'first',
       treeData: [],
       attrOptions: [],
       tableData: [],
       chartClass: null,
-      chartClass1: "tree1",
-      //操作状态，新增或更新,true为新增，false为修改
+      chartClass1: 'tree1',
+      // 操作状态，新增或更新,true为新增，false为修改
       operation: true,
       editVisible1: false,
       total1: 0,
-      //请求参数
+      // 请求参数
       query: {
         orgName: null,
         orgShortName: null,
         orgType: 0,
-        pageNumber: "1",
-        pageSize: "10",
-        parentId: null,
+        pageNumber: '1',
+        pageSize: '10',
+        parentId: null
       },
-      //历史版本请求参数
+      // 历史版本请求参数
       historyQuery: {
         // 截止时间
         endDate: null,
         pageNumber: 1,
         pageSize: 10,
         // 起始时间
-        startDate: null,
+        startDate: null
       },
       filterText: null,
       editVisible: false,
       total: 0,
       form: {},
       defaultProps: {
-        label: "orgName",
-        children: "children",
+        label: 'orgName',
+        children: 'children'
       },
       isShowPage: false,
       // 默认展开的数组
       tableOption: {
-        label: "操作",
+        label: '操作',
         width: 300,
         options: [
           {
-            label: "更新组织",
-            type: "text",
-            icon: "el-icon-edit",
-            methods: "edit",
-            disabled: !this.hasButtons("org-edit"),
+            label: '更新组织',
+            type: 'text',
+            icon: 'el-icon-edit',
+            methods: 'edit',
+            disabled: !this.hasButtons('org-edit')
           },
           {
-            label: "增加下级组织",
-            type: "text",
-            icon: "el-icon-paperclip",
-            methods: "setrole",
-            disabled: !this.hasButtons("org-addsubset"),
+            label: '增加下级组织',
+            type: 'text',
+            icon: 'el-icon-paperclip',
+            methods: 'setrole',
+            disabled: !this.hasButtons('org-addsubset')
           },
           {
-            label: "删除组织",
-            type: "text",
-            icon: "el-icon-delete",
-            methods: "delete",
-            disabled: !this.hasButtons("org-del"),
-          },
-        ],
+            label: '删除组织',
+            type: 'text',
+            icon: 'el-icon-delete',
+            methods: 'delete',
+            disabled: !this.hasButtons('org-del')
+          }
+        ]
       },
       TreeDatas: {},
       TreeDatas1: {},
-      tableColId: "orgId",
+      tableColId: 'orgId',
       tableLabel: [
         {
-          label: "组织名称",
-          param: "orgName",
+          label: '组织名称',
+          param: 'orgName',
           selection: true,
           fixed: true,
-          click: true,
+          click: true
         },
-        { label: "组织编码", param: "orgCode", align: "center" },
+        { label: '组织编码', param: 'orgCode', align: 'center' },
         {
-          label: "创建时间",
-          param: "createDate",
-          align: "center",
-        },
+          label: '创建时间',
+          param: 'createDate',
+          align: 'center'
+        }
       ],
       tableLabel1: [
         // { label: "id", param: "versionId", align: "center", selection: true},
         {
-          label: "版本号",
-          param: "versionNum",
-          align: "center",
+          label: '版本号',
+          param: 'versionNum',
+          align: 'center',
           fixed: true,
           click: true,
-          selection: true,
+          selection: true
         },
-        { label: "提交人", param: "submitBy", align: "center" },
-        { label: "提交时间", param: "submitDate", align: "center" },
-      ],
-    };
-  },
-  components: {
-    tableView,
-    // treeCharts,
-    OrganizationChart,
-  },
-  created() {
-    this.getData();
-    this.getAttr();
+        { label: '提交人', param: 'submitBy', align: 'center' },
+        { label: '提交时间', param: 'submitDate', align: 'center' }
+      ]
+    }
   },
   watch: {
     filterText(val) {
-      this.$refs.tree.filter(val);
-    },
+      this.$refs.tree.filter(val)
+    }
+  },
+  created() {
+    this.getData()
+    this.getAttr()
   },
   methods: {
-    //获取所有组织
+    // 获取所有组织
     getData() {
       getBayIdManOrg(this.query).then(
-        (res) => (
+        res => (
           (this.treeData = res.data),
           (this.TreeDatas = res.data[0]),
           (this.total = res.data.total)
         )
-      );
+      )
     },
-    //正常权限button
+    // 正常权限button
     hasButtons(data) {
-      return isButtons(data);
+      return isButtons(data)
     },
-    //获取组织类型下拉框
+    // 获取组织类型下拉框
     getAttr() {
-      getAttrMenu({ valueCode: "org_type" }).then(
-        (res) => (this.attrOptions = res.data[0].org_type.option)
-      );
+      getAttrMenu({ valueCode: 'org_type' }).then(
+        res => (this.attrOptions = res.data[0].org_type.option)
+      )
     },
-    //监听table组件多选框事件
+    // 监听table组件多选框事件
     getSelectionChange(e) {
-      console.log(e);
+      console.log(e)
     },
-    //监听table组件按钮事件
+    // 监听table组件按钮事件
     getButton(e, info) {
-      console.log(e);
-      console.log(info);
+      console.log(e)
+      console.log(info)
       // edit更新组织
-      if (e == "edit") {
-        this.updataTree(info);
-      } else if (e == "setrole") {
-        this.appendTree(info);
-      } else if (e == "delete") {
-        this.removeTree(info);
+      if (e == 'edit') {
+        this.updataTree(info)
+      } else if (e == 'setrole') {
+        this.appendTree(info)
+      } else if (e == 'delete') {
+        this.removeTree(info)
       }
     },
-    //保存
+    // 保存
     saveEdit() {
-      const that = this;
-      const data = that.tableOption;
+      const that = this
+      const data = that.tableOption
       if (this.operation) {
-        addOneManOrg(that.form).then((res) => {
+        addOneManOrg(that.form).then(res => {
           if (!data.children) {
-            this.$set(data, "children", []);
+            this.$set(data, 'children', [])
           }
           if (res.code == 0) {
-            that.$message.success(res.message);
-            that.getData();
-            that.editVisible = false;
+            that.$message.success(res.message)
+            that.getData()
+            that.editVisible = false
           } else {
-            that.$message.error(res.message);
+            that.$message.error(res.message)
           }
-        });
+        })
       } else {
-        updateManOrg(that.form).then((res) => {
+        updateManOrg(that.form).then(res => {
           if (res.code == 0) {
-            that.$message.success(res.message);
-            that.editVisible = false;
+            that.$message.success(res.message)
+            that.editVisible = false
           } else {
-            that.$message.error(res.message);
+            that.$message.error(res.message)
           }
-        });
+        })
       }
     },
-    //根据条件查询
+    // 根据条件查询
     rawQuery() {
-      this.getData();
+      this.getData()
     },
-    //新增用户
+    // 新增用户
     addQuery() {
-      this.form = {};
-      this.operation = true;
-      this.editVisible = true;
+      this.form = {}
+      this.operation = true
+      this.editVisible = true
     },
 
-    //增删节点
+    // 增删节点
     appendTree(data) {
-      if (!this.hasButtons("org-addsubset")) {
-        this.$message.error("对不起,你不具备操作权限");
-        return false;
+      if (!this.hasButtons('org-addsubset')) {
+        this.$message.error('对不起,你不具备操作权限')
+        return false
       }
-      const parentIdAll = data.parentIdAll + "," + data.orgId || "";
-      this.operation = true;
+      const parentIdAll = data.parentIdAll + ',' + data.orgId || ''
+      this.operation = true
       this.form = {
-        orgName: "",
-        orgShortName: "",
+        orgName: '',
+        orgShortName: '',
         orgType: 1,
         parentId: data.orgId,
-        parentIdAll,
-      };
-      this.editVisible = true;
-    },
-    //更新节点
-    updataTree(data) {
-      if (!this.hasButtons("org-edit")) {
-        this.$message.error("对不起,你不具备操作权限");
-        return false;
+        parentIdAll
       }
-      this.form = data;
-      this.operation = false;
-      this.editVisible = true;
+      this.editVisible = true
+    },
+    // 更新节点
+    updataTree(data) {
+      if (!this.hasButtons('org-edit')) {
+        this.$message.error('对不起,你不具备操作权限')
+        return false
+      }
+      this.form = data
+      this.operation = false
+      this.editVisible = true
     },
     removeTree(data) {
-      if (!this.hasButtons("org-del")) {
-        this.$message.error("对不起,你不具备操作权限");
-        return false;
+      if (!this.hasButtons('org-del')) {
+        this.$message.error('对不起,你不具备操作权限')
+        return false
       }
-      const that = this;
+      const that = this
       // const parent = data.parent;
-      const idList = data.orgId;
+      const idList = data.orgId
       // const children = parent.data.children || parent.data;
       // const index = children.findIndex((d) => d.orgId === data.orgId);
 
       that
-        .$confirm("确定要删除吗？", "提示", {
-          type: "warning",
+        .$confirm('确定要删除吗？', '提示', {
+          type: 'warning'
         })
-        .then((res) => {
-          delOneManOrg({ idList }).then((res) => {
+        .then(res => {
+          delOneManOrg({ idList }).then(res => {
             if (res.code == 0) {
-              that.$message.success(res.message);
-              that.getData();
+              that.$message.success(res.message)
+              that.getData()
             } else {
-              that.$message.error(res.message);
+              that.$message.error(res.message)
             }
-          });
+          })
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch(err => {
+          console.log(err)
+        })
     },
     getOneUser(e) {
-      console.log(e);
+      console.log(e)
     },
-    //分页请求
+    // 分页请求
     handleCurrentChange(e) {
-      this.query.pageNumber = e;
-      this.getData();
+      this.query.pageNumber = e
+      this.getData()
     },
     handleSizeChange(e) {
-      this.query.pageSize = e;
-      this.getData();
+      this.query.pageSize = e
+      this.getData()
     },
     handleClick(e) {
-      const { name } = e;
-      if (name == "history") {
-        this.getHistorys();
+      const { name } = e
+      if (name == 'history') {
+        this.getHistorys()
       }
     },
     // 获取历史版本
     getHistorys() {
       getHistory(this.historyQuery).then(
-        (res) => (
+        res => (
           (this.tableData = res.data.records), (this.total1 = res.data.total)
         )
-      );
+      )
     },
     getOneInfo(e) {
-      this.TreeDatas1 = e.orgList[0];
-      this.chartClass = e.versionId;
-      this.editVisible1 = true;
+      this.TreeDatas1 = e.orgList[0]
+      this.chartClass = e.versionId
+      this.editVisible1 = true
     },
-    //分页请求
+    // 分页请求
     handleCurrentChange1(e) {
-      this.historyQuery.pageNumber = e;
-      this.getHistorys();
+      this.historyQuery.pageNumber = e
+      this.getHistorys()
     },
     handleSizeChange1(e) {
-      this.historyQuery.pageSize = e;
-      this.getHistorys();
+      this.historyQuery.pageSize = e
+      this.getHistorys()
     },
-    //更新钉钉组织
-    updataOrgDing(){
+    // 更新钉钉组织
+    updataOrgDing() {
       try {
-        updataDingOrg().then(res=>{
-        if(res.code === 0){
-          this.$message.success(res.message)
-        }else{
-          this.$message.error(res.message)
-        }
-      })
+        updataDingOrg().then(res => {
+          if (res.code === 0) {
+            this.$message.success(res.message)
+          } else {
+            this.$message.error(res.message)
+          }
+        })
       } catch (error) {
-          this.$message.error("异常错误")
-      } 
+        this.$message.error('异常错误')
+      }
     }
-  },
-};
+  }
+}
 </script>
 <style lang="scss">
 .org-main {
@@ -453,7 +463,7 @@ export default {
   }
   .orgchart-container {
     height: auto;
-    background: url("../../../assets/img/orgbg.png") no-repeat;
+    background: url('../../../assets/img/orgbg.png') no-repeat;
     background-size: cover;
   }
   .orgchart .node.focused,

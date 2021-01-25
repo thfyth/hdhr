@@ -18,6 +18,7 @@ const mutations = {
   SET_BUTTONS: (state, buttons) => {
     state.buttons = buttons
   },
+  
 }
 const actions = {
   GenerateRoutes({
@@ -26,8 +27,25 @@ const actions = {
     return new Promise((resolve, reject) => {
       GeneratorDynamicRouter(data).then(res => {
         const buttons = getButtons(res);
-        commit('SET_ROUTERS', res);
+        // commit('SET_ROUTERS', res);
+        console.log('====================================');
+        console.log(buttons);
+        console.log('====================================');
         commit('SET_BUTTONS', buttons);
+        resolve(res);
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  GenerateNoBtnRoutes({
+    commit
+  }, data) {
+    return new Promise((resolve, reject) => {
+      GeneratorDynamicRouter(data).then(res => {
+        // const buttons = getButtons(res);
+        commit('SET_ROUTERS', res);
+        // commit('SET_BUTTONS', buttons);
         resolve(res);
       }).catch(err => {
         reject(err)
@@ -35,6 +53,7 @@ const actions = {
     })
   }
 }
+
 //遍历，找出按钮
 function getButtons(data){
   let arr = [];

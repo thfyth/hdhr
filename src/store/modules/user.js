@@ -11,7 +11,8 @@ const getDefaultState = () => {
     menuList: [],
     roleIdStr: '',
     count:'',
-    errMsg:null
+    errMsg:null,
+    noBtnMenuList:[]
   }
 }
 
@@ -45,23 +46,12 @@ const mutations = {
   SET_USER_ERRMSG:(state, msg) => {
     state.errMsg = msg
   },
+  SET_NOBTN_ROUTE:(state,menu)=>{
+    state.noBtnMenuList = menu
+  }
 }
 
 const actions = {
-  // user login
-  // login({ commit }, userInfo) {
-  //   const { username, password } = userInfo
-  //   return new Promise((resolve, reject) => {
-  //     login({ username: username.trim(), password: password }).then(response => {
-  //       const { data } = response
-  //       commit('SET_TOKEN', data.token)
-  //       setToken(data.token)
-  //       resolve()
-  //     }).catch(error => {
-  //       reject(error)
-  //     })
-  //   })
-  // },
   // 登陆
   login({ commit }, userInfo) {
     const { userName } = userInfo;
@@ -123,9 +113,11 @@ const actions = {
   getMenu({ commit }) {
     return new Promise((resolve, reject) => {
       getRouters().then(response => {
-        const { data } = response
+        const { data,notBtnMenu } = response
         commit('SET_MENU_LIST', getFirst(data))
         commit('SET_ROLE_STR', getRoleId(data))
+         //设置不含按钮的菜单
+        commit('SET_NOBTN_ROUTE',getFirst(notBtnMenu))
         resolve(data)
       }).catch(error => {
         reject(error)

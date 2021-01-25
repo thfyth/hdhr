@@ -30,7 +30,7 @@ export default {
   width: 100%;
   position: absolute;
   overflow: hidden;
-  top: 45px;
+  top: 85px;
   bottom: 0px;
   bottom: 0;
 }
