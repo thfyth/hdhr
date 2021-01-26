@@ -1374,32 +1374,6 @@
               <td>
                 <el-input v-model="form.firmEmail" :disabled="!option" />
               </td>
-              <th>部门</th>
-              <td>
-                <el-cascader
-                  ref="orgIdCascader"
-                  v-model="form.orgId"
-                  :disabled="!option"
-                  :options="orgTreeData"
-                  :props="orgProps"
-                  :show-all-levels="false"
-                />
-              </td>
-              <th>岗位</th>
-              <td>
-                <el-select
-                  v-model="form.postId"
-                  :disabled="!option"
-                  placeholder="岗位"
-                >
-                  <el-option
-                    v-for="item in postOptions"
-                    :key="item.postId"
-                    :label="item.postName"
-                    :value="item.postId"
-                  />
-                </el-select>
-              </td>
             </tr>
           </table>
 
@@ -1418,20 +1392,35 @@
               border="1"
               style="width: 100%; table-layout: fixed"
             >
-              <template v-for="item in postData">
-                <div :key="item.id">
-                  <span class="title-header">岗位</span>
+            <div class="title">
+                    <span class="title-header">岗位列表</span>
+                    <div v-if="userType" style="display:inline-block">
+                      <span v-if="option" class="font" @click="getStaffInfo">取 消</span>
+                      <span v-if="option" class="font" @click="updataStaff">保 存</span>
+                      <span v-if="option" class="font" @click="addStaffPost">新增岗位</span>
+                      <span v-else class="font" @click="setStaffInfo">编 辑</span>
+                    </div>
+                </div>
+              <template v-for="(item,index) in form.postList">
+                <div :key="item.employeePostId">
+                   <div class="title">
+                    <span class="title-header">岗位{{index}}</span>
+                    <div v-if="userType" style="display:inline-block">
+                      <!-- <span v-if="option && index== 0" class="font" @click="getStaffInfo">取 消</span>
+                      <span v-if="option && index== 0" class="font" @click="updataStaff">保 存</span>
+                      <span v-if="option && index== 0" class="font" @click="addStaffPost">新增岗位</span> -->
+                      <span v-if="option && index!== 0" class="font" @click="delStaffPost(index)">删除岗位</span>
+                      <!-- <span v-else class="font" @click="setStaffInfo">编 辑</span> -->
+                    </div>
+                  </div>
                   <tr>
-                    <th>企业邮箱</th>
-                    <td>
-                      <el-input v-model="form.firmEmail" :disabled="!option" />
-                    </td>
                     <th>部门</th>
                     <td>
                       <el-cascader
                         ref="orgIdCascader"
-                        v-model="form.orgId"
+                        v-model="item.orgId"
                         :options="orgTreeData"
+                        :disabled="!option"
                         :props="orgProps"
                         :show-all-levels="false"
                       />
@@ -1439,14 +1428,46 @@
                     <th>岗位</th>
                     <td>
                       <el-select
-                        v-model="form.postId"
+                        v-model="item.postId"
+                          :disabled="!option"
                         placeholder="岗位"
                       >
                         <el-option
-                          v-for="item in postType"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
+                          v-for="items in postOptions"
+                          :key="items.postId"
+                          :label="items.postName"
+                          :value="items.postId"
+                        />
+                      </el-select>
+                    </td>
+                    <th>岗位类型</th>
+                    <td>
+                      <el-select
+                        v-model="item.postType"
+                          :disabled="!option"
+                        placeholder="岗位类型"
+                      >
+                        <el-option
+                          v-for="items in postType"
+                          :key="items.value"
+                          :label="items.label"
+                          :value="items.value"
+                        />
+                      </el-select>
+                    </td>
+                    <th>职级</th>
+                    <td>
+                      <el-select
+                        v-model="item.rankId"
+                        :disabled="!option"
+                        placeholder="职级"
+                      >
+                        <el-option
+                          v-for="items in rankOptions"
+                          :key="items.rankId"
+                          :label="items.rankName"
+                          
+                          :value="items.rankId"
                         />
                       </el-select>
                     </td>
@@ -2528,7 +2549,7 @@ export default {
       postOptions: [],
       socialForm: {},
       contractData: [],
-      postData: [],
+      postForm:{},
       filesData: [],
       // 考勤请求参数
       attendQuery: {
@@ -2558,7 +2579,8 @@ export default {
           value:2,
           label:'兼职'
         },
-      ]
+      ],
+      imgFolat:false
     }
   },
   created() {
@@ -3166,6 +3188,7 @@ export default {
         res => {
           that.orgTreeData = res[0].data
           that.rankOptions = res[1].data.data
+          console.log(res);
           that.postOptions = res[2].data.data
           that.socialForm = res[3].data || {}
           that.filesData = res[4].data
@@ -3240,6 +3263,21 @@ export default {
           that.$message.error(res.message)
         }
       })
+    },
+    //新增岗位
+    addStaffPost(){
+      const that = this
+      const form = {
+        employeeId:that.employeeId
+      }
+
+      that.form.postList.push(form)
+      
+      this.$set(that.form);
+    },
+    //删除岗位
+    delStaffPost(index){
+       this.form.postList.splice(index,1)
     }
   }
 }
