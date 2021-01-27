@@ -14,15 +14,15 @@
       <!-- <table-view :total="total" :table-label="tableLabel" :table-data="tableData"/> -->
       <el-table :data="tableData" style="width: 100%">
         <el-table-column type="index" label="序号" align="center" width="50px"/>
-        <el-table-column prop="userid" label="钉钉用户id"  align="center"/>
+        <el-table-column prop="realName" label="员工名称"  align="center"/>
         <el-table-column prop="quotaNumPerHour" label="额度总天数" align="center" />
         <el-table-column prop="quotaNumPerDay" label="额度总小时数" align="center" />
         <el-table-column prop="quotaCycle" label="额度所对应的周期" align="center" />
-        <el-table-column prop="endTime" label="额度有效期结束时间" align="center" />
-        <el-table-column prop="startTime" label="假期有效期开始时间" align="center" />
+        <el-table-column prop="endTimeString" label="额度有效期结束时间" align="center" />
+        <el-table-column prop="startTimeString" label="假期有效期开始时间" align="center" />
         <el-table-column prop="usedNumPerDay" label="额度已使用天数" align="center" />
         <el-table-column prop="usedNumPerHour" label="额度已使用小时" align="center" />
-        <el-table-column prop="leaveCode" label="假期类型" align="center" />
+        <el-table-column prop="leaveName" label="假期类型" align="center" />
       </el-table>
       <div class="block pagination-box">
         <el-pagination

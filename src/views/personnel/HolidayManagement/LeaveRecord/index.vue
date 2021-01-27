@@ -43,14 +43,13 @@ export default {
         },
         { label: '员工名称', param: 'realName', align: 'center',fixed: true,
           click: true},
-        { label: '请假天数', param: 'recordNumPerDay', align: 'center' },
-        { label: '请假小时数', param: 'recordNumPerHour', align: 'center' },
+        { label: '请假时长', param: 'leaveNum', align: 'center' },
         { label: '请假原因', param: 'leaveReason', align: 'center' },
         { label: '请假类型(单位)', param: 'leaveViewUnit', align: 'center' },
-        { label: '额度有效期开始时间', param: 'startTime', align: 'center' },
-        { label: '额度有效期结束时间', param: 'endTime', align: 'center' },
-        { label: '假期记录类型', param: 'leaveRecordType', align: 'center' },
-        { label: '假期类型', align: 'center',
+        { label: '额度有效期开始时间', param: 'startTimeString', align: 'center' },
+        { label: '额度有效期结束时间', param: 'endTimeString', align: 'center' },
+        { label: '假期类型', param: 'leaveName', align: 'center' },
+        { label: '是否通过', align: 'center',
             render: row => {
                 if(row.leaveStatus == "init"){
                     return "请假申请"
