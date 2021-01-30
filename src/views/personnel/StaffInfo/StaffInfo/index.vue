@@ -258,7 +258,7 @@
                     :disabled="!option"
                     value-format="yyyy-MM-dd"
                     type="date"
-                    placeholder="出生日期"
+                    placeholder="首次工作时间"
                   />
                 </td>
                 <th>生肖</th>

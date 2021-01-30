@@ -200,9 +200,6 @@ export default {
       const data4 = getEmpMapData()
       const data5 = getEmpSource()
       Promise.all([data1, data2, data3, data4,data5]).then(res => {
-        console.log('====================================');
-        console.log(res);
-        console.log('====================================');
         vm.tableData = res[0].data
         vm.sexData = res[1].data.sex
         vm.eduData = res[1].data.education

@@ -236,10 +236,7 @@ export default {
     },
     //换行颜色
      tableRowClassName({row, rowIndex}) {
-       console.log(rowIndex);
         if (rowIndex%2 == 0) {
-          
-        console.log(rowIndex);
           return 'bg-row';
         }
         return '';

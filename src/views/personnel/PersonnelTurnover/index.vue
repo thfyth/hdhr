@@ -596,8 +596,6 @@ export default {
           that.$set(that.form, "changeBeforePostId", postId);
           that.$set(that.form, "seniority", seniority || 0);
           that.$set(that.form, "entryDate", entryDate || null);
-          
-
         }
       })
     },

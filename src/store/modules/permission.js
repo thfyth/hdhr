@@ -28,9 +28,6 @@ const actions = {
       GeneratorDynamicRouter(data).then(res => {
         const buttons = getButtons(res);
         // commit('SET_ROUTERS', res);
-        console.log('====================================');
-        console.log(buttons);
-        console.log('====================================');
         commit('SET_BUTTONS', buttons);
         resolve(res);
       }).catch(err => {

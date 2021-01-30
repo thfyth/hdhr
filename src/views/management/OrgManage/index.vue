@@ -274,12 +274,11 @@ export default {
     },
     // 监听table组件多选框事件
     getSelectionChange(e) {
-      console.log(e)
+      
     },
     // 监听table组件按钮事件
     getButton(e, info) {
-      console.log(e)
-      console.log(info)
+      
       // edit更新组织
       if (e == 'edit') {
         this.updataTree(info)
@@ -385,7 +384,6 @@ export default {
         })
     },
     getOneUser(e) {
-      console.log(e)
     },
     // 分页请求
     handleCurrentChange(e) {

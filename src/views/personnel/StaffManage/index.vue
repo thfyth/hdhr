@@ -1,6 +1,6 @@
 <template>
-  <div class="main staff-mian">
-    <div class="box-com">
+  <div class="main staff-mian tur-main">
+    <div class="box-com ">
       <div class="org-box">
         <div class="tree-view">
           <span>
@@ -74,6 +74,12 @@
                 @click="staffLeave"
               >离职</el-button>
              </div>
+              <div class="button-box">
+               <el-button
+                class="btn-change"
+                @click="changeStaff"
+              >发起异动</el-button>
+             </div>
             </div>
              <div class="button-box">
                <el-button
@@ -100,7 +106,7 @@
             
           </div>
         </div>
-        <div class="staff-info">
+        <!-- <div class="staff-info">
           <span
             v-for="(item, index) in emTotalList"
             :key="index"
@@ -109,7 +115,7 @@
           >
             {{ item.name }}：{{ item.value }}
           </span>
-        </div>
+        </div> -->
         <div class="table-view">
           <el-table :data="tableData" stripe @selection-change="getSelectionChange" :header-cell-style="{ background: '#F7F8FA', color: '#293B59' }">
             <el-table-column
@@ -507,13 +513,292 @@
         </div>
       </div>
     </el-drawer>
-    <el-dialog title="导出条件筛选" :visible.sync="dialogVisible" width="40%">
+    <!-- <el-dialog title="导出条件筛选" :visible.sync="dialogVisible" width="40%">
       <div />
       <div slot="footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="exportTemp">确 定</el-button>
       </div>
-    </el-dialog>
+    </el-dialog> -->
+    <div class="model">
+      <el-dialog :visible.sync="dialogVisible" width="80%">
+        <template slot="title">
+          <template
+            v-if="form.changeTempType == 0"
+          >增加本公司异动模板</template>
+          <template v-else>增加跨公司异动模板</template>
+        </template>
+        <div class="tur-dialog-box">
+          <div class="tur-title">
+            异动模板类型:
+            <el-select
+              v-model="form.changeTempType"
+              placeholder="异动模板类型"
+              @change="changeType"
+            >
+              <el-option
+                v-for="item in changeTempTypeOpt"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
+          </div>
+          <!-- changeTempType	integer($int32)
+异动模板类型（0本公司，1.跨公司） -->
+
+          <el-form v-if="form.changeTempType == 0" ref="form" :model="form">
+            <table
+              align="center"
+              cellspacing="0"
+              border="1"
+              style="width: 100%; table-layout: fixed"
+            >
+              <tr>
+                <th>员工姓名</th>
+                <td>
+                  <span v-text="form.employeeName"></span>
+                </td>
+                <th>部门</th>
+                <td>
+                  <span v-text="form.changeBeforeOrgName"></span>
+                </td>
+                <th>职位</th>
+                <td>
+                  <span v-text="form.changeBeforePostName"></span>
+                </td>
+                <th>异动生效时间</th>
+                <td>
+                  <el-date-picker
+                    v-model="form.changeUseDate"
+                    value-format="yyyy-MM-dd"
+                    format="yyyy 年 MM 月 dd 日"
+                    type="date"
+                  />
+                </td>
+              </tr>
+
+              <tr>
+                <th>
+                  异动类型
+                </th>
+                <td colspan="7">
+                  <el-radio-group v-model="form.changeType">
+                    <el-radio
+                      v-for="item in turnType"
+                      :key="item.attrValue"
+                      :label="item.attrValue"
+                    >{{ item.attrName }}</el-radio>
+                  </el-radio-group>
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  异动前职位
+                </th>
+                <td>
+                  <span v-text="form.changeBeforePostName"></span>
+                </td>
+                <th>
+                  异动后职位
+                </th>
+                <td>
+                  <el-select v-model="form.changePostId" placeholder="">
+                    <el-option
+                      v-for="item in postData"
+                      :key="item.postId"
+                      :label="item.postName"
+                      :value="item.postId"
+                    />
+                  </el-select>
+                </td>
+                <th>
+                  考核期
+                </th>
+                <td colspan="3">
+                  <el-row :gutter="10">
+                    <el-col :span="11">
+                      <el-date-picker
+                        v-model="form.checkStart"
+                        value-format="yyyy-MM-dd"
+                        format="yyyy 年 MM 月 dd 日"
+                        type="date"
+                      />
+                    </el-col>
+                    <el-col :span="2">
+                      <div>
+                        至
+                      </div>
+                    </el-col>
+                    <el-col :span="11">
+                      <el-date-picker
+                        v-model="form.checkEnd"
+                        value-format="yyyy-MM-dd"
+                        format="yyyy 年 MM 月 dd 日"
+                        type="date"
+                      />
+                    </el-col>
+                  </el-row>
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  异动原因
+                </th>
+                <td colspan="7">
+                  <el-input
+                    v-model="form.changeExplain"
+                    type="textarea"
+                    autosize
+                  />
+                </td>
+              </tr>
+            </table>
+          </el-form>
+          <el-form v-else ref="eForm" :model="form">
+            <table
+              align="center"
+              cellspacing="0"
+              border="1"
+              style="width: 100%; table-layout: fixed"
+            >
+              <tr>
+                <th>员工姓名</th>
+                <td>
+                   <!-- <el-autocomplete
+                    v-model="form.employeeName"
+                    placeholder="请输入内容"
+                    :fetch-suggestions="querySearchAsync"
+                    @select="handleSelect"
+                  /> -->
+                  <span v-text="form.employeeName"></span>
+                </td>
+                <th>入职时间</th>
+                <td>
+                  <span v-text="form.entryDate"></span>
+                </td>
+                <th>司龄</th>
+                <td>
+                  <span v-text="form.seniority" />
+                </td>
+                <th>异动时间</th>
+                <td>
+                  <el-date-picker
+                    v-model="form.changeDate"
+                    value-format="yyyy-MM-dd"
+                    format="yyyy 年 MM 月 dd 日"
+                    type="date"
+                  />
+                </td>
+              </tr>
+
+              <tr>
+                <th>
+                  异动类型
+                </th>
+                <td colspan="7">
+                  <el-radio-group v-model="form.changeType">
+                    <el-radio
+                      v-for="item in turnType"
+                      :key="item.attrValue"
+                      :label="item.attrValue"
+                    >{{ item.attrName }}</el-radio>
+                  </el-radio-group>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="8" class="text-left td-title">
+                  异动前公司信息
+                </td>
+              </tr>
+              <tr>
+                <th colspan="3" class="text-left">
+                  公司
+                </th>
+                <th colspan="3" class="text-left">
+                  部门
+                </th>
+                <th colspan="2" class="text-left">
+                  职位
+                </th>
+              </tr>
+              <tr>
+                <td colspan="3" style="line-height: 40px;">
+                  <span v-text="form.changeBeforeCompanyName"></span>
+                </td>
+                <td colspan="3">
+                  <span v-text="form.changeBeforeOrgName"></span>
+                </td>
+                <td colspan="2">
+                  <span v-text="form.changeBeforePostName"></span>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="8" class="text-left td-title">
+                  异动后公司信息
+                </td>
+              </tr>
+              <tr>
+                <th colspan="3" class="text-left">
+                  公司
+                </th>
+                <th colspan="3" class="text-left">
+                  部门
+                </th>
+                <th colspan="2" class="text-left">
+                  职位
+                </th>
+              </tr>
+              <tr>
+                <td colspan="3">
+                  <el-cascader
+                    v-model="form.changeCompanyId"
+                    :options="orgTreeData"
+                    :props="orgProps"
+                    :show-all-levels="false"
+                  />
+                </td>
+                <td colspan="3">
+                  <el-cascader
+                    v-model="form.changeOrgId"
+                    :options="orgTreeData"
+                    :props="orgProps"
+                    :show-all-levels="false"
+                    @change="getOrg"
+                  />
+                </td>
+                <td colspan="2">
+                  <el-select v-model="form.changePostId" placeholder="">
+                    <el-option
+                      v-for="item in postData"
+                      :key="item.postId"
+                      :label="item.postName"
+                      :value="item.postId"
+                    />
+                  </el-select>
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  异动说明
+                </th>
+                <td colspan="7">
+                  <el-input
+                    v-model="form.changeExplain"
+                    placeholder="异动说明"
+                  />
+                </td>
+              </tr>
+            </table>
+          </el-form>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="submit">确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
+
   </div>
 </template>
 
@@ -537,12 +822,15 @@ import {
   addLeaveStaff
   // 查询组织岗位职级
 } from '@/api/personnel/staff'
+import { addChange,empChange } from '@/api/personnel/PersonnelTurnover'
+
 import { selectAllDrop } from '@/api/user'
 import { getToken } from '@/utils/auth'
 import { getAttrMenu } from '@/api/attrManage'
 //导入判断是否拥有该按钮
 import { isButtons } from "@/utils/button";
 import { getBayIdManOrg } from '@/api/management/orgManage'
+import { getPostList } from '@/api/management/postManage'
 import axios from 'axios'
 export default {
   components: {
@@ -643,13 +931,31 @@ export default {
       orgActive: null,
       emTotalList: [],
       dialogVisible: false,
+      modelVisible: false,
       parentIdAll: null,
       orgId: null,
-      multipleSelection:''
-      
+      multipleSelection:'',
+      changeTempTypeOpt: [
+        { id: 0, name: '本公司' },
+        { id: 1, name: '跨公司' }
+      ],
+      // 异动类型
+      turnType: [],
+      // 表单
+      form: {
+        changeTempType: 0
+      },
+      orgProps: {
+        label: 'orgName',
+        value: 'orgId',
+        checkStrictly: true,
+        emitPath: false
+      },
+      option:true,
+      multipleList:[]
     }
   },
-  created() {
+  mounted() {
     this.geteEployees()
     // this.getComData();
     this.getOption()
@@ -676,13 +982,24 @@ export default {
       const isLeave=2;
       const tree = findOrgTree({isLeave})
       const emTotal = getTotal()
-      Promise.all([org, rank, post, tree, emTotal]).then(
+      const change = getAttrMenu({ valueCode: 'change_type' })
+      const query = {
+        orgId: null,
+        pageNumber: '1',
+        pageSize: '10',
+        postCode: null,
+        postName: null
+      }
+      const postList = getPostList(query);
+      Promise.all([org, rank, post, tree, emTotal,change,postList]).then(
         res => (
           (this.orgTreeData = res[0].data),
           (this.rankOptions = res[1].data.data),
           (this.postOptions = res[2].data.data),
           (this.treeData = res[3].data.data),
-          (this.emTotalList = res[4].data)
+          (this.emTotalList = res[4].data),
+          (this.turnType = res[5].data[0].change_type.option),
+          (this.postData = res[6].data)
         )
       )
     },
@@ -902,6 +1219,7 @@ export default {
         arr += v.employeeId + ",";
       });
       this.multipleSelection = arr;
+      this.multipleList=e
     },
     addEmp() {
       // this.$router.push({ name: 'addEmployees', params: { employeeId: 0 }})
@@ -1137,12 +1455,171 @@ export default {
           })
         })
         .catch(err => {})
-    }
+    },
+    //员工异动
+    changeStaff(){
+
+      const that=this;
+      const list = that.multipleList
+      console.log(list);
+      if(list.length !== 1){
+        that.$message.error('只能修改一个')
+        return
+      }
+      that
+        .$confirm('是否对该员工发起异动?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        .then(() => {
+          const {employeeId} = list[0];
+          that.form.employeeId=employeeId
+          empChange({empId:employeeId})
+          .then(res=>{
+            if(res.code === 0){
+              const { companyName,empId,orgName,employeeName,postName,company,orgId,postId,seniority,entryDate }=res.data;
+              that.$set(that.form, "changeBeforeCompanyName", companyName || '无');
+              that.$set(that.form, "changeBeforeOrgName", orgName || '无');
+              that.$set(that.form, "changeBeforePostName", postName || '无');
+              that.$set(that.form, "changeBeforeCompanyId", company || null);
+              that.$set(that.form, "changeBeforeOrgId", orgId);
+              that.$set(that.form, "changeBeforePostId", postId);
+              that.$set(that.form, "seniority", seniority || 0);
+              that.$set(that.form, "entryDate", entryDate || null);
+              that.$set(that.form, "employeeName", employeeName || '无');
+              
+              that.dialogVisible=true
+
+            }
+          })
+          
+        })
+        .catch(err => {})
+    },
+    //增加异动
+    submit(){
+      let data;
+      const that=this;
+      // if(that.option){
+        data=addChange(that.form);
+      // }else{
+      //   data=updataChange(that.form)
+      // }
+      data.then(res=>{
+        if(res.code === 0){
+          that.$message.success(res.message)
+          that.dialogVisible=false;
+        }else{
+          that.$message.error(res.message)
+        }
+      })
+    },
+    // 切换模板
+    changeType(e) {
+      this.form.changeTempType =e
+    },
   }
 }
 </script>
 
 <style lang="scss">
+.tur-main {
+  .tur-title {
+    margin-bottom: 15px;
+  }
+  .active {
+    color: Blue;
+    cursor: pointer;
+  }
+  .el-form {
+    table {
+      border-collapse: collapse;
+      word-wrap: break-word;
+      word-break: break-all;
+      border: none;
+      th {
+        text-align: right;
+        padding-right: 5px;
+        background-color: #f8f9fe;
+        font-size: 14px;
+        text-shadow: 0 1px 1px #e8ebee;
+        line-height: 40px;
+        max-width: 130px;
+        min-width: 100px;
+        border: 1px solid #ccc;
+      }
+      .text-left {
+        text-align: left;
+      }
+      .td-title {
+        line-height: 36px;
+        font-weight: bold;
+      }
+      td {
+        border: 1px solid #ccc;
+        min-width: 130px !important;
+        padding: 0 5px;
+        .el-input.is-disabled .el-input__inner {
+          box-shadow: none;
+          background: transparent;
+          cursor: text;
+          border-color: transparent;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          color: #111;
+          overflow: hidden;
+        }
+        .el-textarea.is-disabled .el-textarea__inner {
+          background-color: #fff;
+          border: none;
+          color: #000;
+          padding: 0;
+          cursor: text;
+          resize: none;
+        }
+        .el-input__inner {
+          padding: 0;
+        }
+        .el-date-editor.el-input,
+        .el-date-editor.el-input__inner {
+          width: 100% !important;
+        }
+        .el-icon-date:before {
+          content: '';
+        }
+        .el-input.is-disabled .el-input__icon {
+          display: none;
+        }
+      }
+    }
+  }
+  .el-input.is-disabled .el-input__inner {
+    box-shadow: none;
+    background: transparent;
+    cursor: text;
+    border-color: transparent;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #111;
+    overflow: hidden;
+  }
+  .el-textarea.is-disabled .el-textarea__inner {
+    background-color: #fff;
+    border: none;
+    color: #000;
+    padding: 0;
+    cursor: text;
+    resize: none;
+  }
+
+  .el-icon-date:before {
+    content: '';
+  }
+  .el-input.is-disabled .el-input__icon {
+    display: none;
+  }
+}
 .staff-mian {
   .el-drawer {
     overflow: scroll;

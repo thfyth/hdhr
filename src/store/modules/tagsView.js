@@ -13,14 +13,14 @@ const mutations = {
     )
   },
   ADD_CACHED_VIEW: (state, view) => {
-    if (state.cachedViews.includes(view.name)) return
+    if (state.cachedViews.includes(view.path)) return
     if (!view.meta.noCache) {
-      state.cachedViews.push(view.name)
+      state.cachedViews.push(view.name) 
     }
   },
 
   DEL_VISITED_VIEW: (state, view) => {
-    for (const [i, v] of state.visitedViews.entries()) {
+    for (const [i, v] of state.visitedViews.entries()) { 
       if (v.path === view.path) {
         state.visitedViews.splice(i, 1)
         break

@@ -245,7 +245,6 @@ export default {
     // 查询薪资
     getData() {
       selectInsure(vm.query).then(res => {
-        console.log(res)
         if (res.code === 0) {
           vm.tableData = res.data.records
           vm.total = res.data.total

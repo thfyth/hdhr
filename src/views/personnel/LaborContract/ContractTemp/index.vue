@@ -315,7 +315,6 @@ export default {
     },
     // 上传文件成功
     handleListFile(file, fileList) {
-      console.log(file)
       if (file.code == 0) {
         console.log('上传成功')
         // tempId
@@ -329,9 +328,7 @@ export default {
     },
     //上传前判断文件格式
     beforeUpload(file){
-      console.log(file);
       var fileTypeOf=file.name.substring(file.name.lastIndexOf('.')+1)
-      console.log(fileTypeOf);
       if(fileTypeOf !== "doc" && fileTypeOf !== "docx"){
         vm.$message.error('上传文件只能是 doc,docx 格式!');
         return false
