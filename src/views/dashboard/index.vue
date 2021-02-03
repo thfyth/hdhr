@@ -232,7 +232,11 @@ export default {
       if (newId !== vm.activeName) (vm.activeName = newId), vm.getData()
     },
     handleLeave1(newId, oldId) {
-      if (newId !== vm.activeInfo) (vm.activeInfo = newId), vm.getEmpBirthdoy()
+      if (newId !== vm.activeInfo){
+        vm.activeInfo = newId;
+        if( newId == 1) vm.getStyInfo()
+        else vm.getEmpBirthdoy()
+      }
     },
     //换行颜色
      tableRowClassName({row, rowIndex}) {

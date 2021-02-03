@@ -3,13 +3,14 @@
     <div class="main-box post-main">
       <div class="org-box">
         <div class="tree-view">
-          <span>
+          <!-- <span>
             <i class="el-icon-my-home"></i>
-            组织列表</span>
+            组织列表</span> -->
           <el-tree
             :data="treeData"
             :props="defaultProps"
-            node-key="id"
+            node-key="orgId"
+            :default-expanded-keys="defaultCheck"
             highlight-current
             ref="tree"
             :expand-on-click-node="false"
@@ -300,6 +301,7 @@ export default {
       userIdList: [],
       roleIdList: [],
       roleChangeList: [],
+      defaultCheck:[]
     };
   },
   components: {
@@ -326,7 +328,13 @@ export default {
     },
     //获取组织
     getOrgList() {
-      getBayIdManOrg(this.query).then((res) => (this.treeData = res.data));
+      const that = this;
+      that.defaultCheck = []
+      getBayIdManOrg(this.query).then((res) => {
+        const { data } = res;
+        that.defaultCheck.push(data[0].orgId)
+        that.treeData = data
+      });
     },
     //点击获取岗位
     getOrg(e) {
@@ -494,15 +502,13 @@ export default {
     height: 100%;
     max-width: 250px;
     min-width: 200px;
-    padding-top: 15px;
+    padding: 10px 5px;
     border-right: 1px solid #ededed;
   }
   .user-box {
     flex: 3;
   }
-  .tree-view{
-    padding: 0 20px;
-  }
+  
   .el-tree-node {
     margin: 10px 0;
   }

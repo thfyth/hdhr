@@ -3,14 +3,15 @@
     <div class="box-com ">
       <div class="org-box">
         <div class="tree-view">
-          <span>
+          <!-- <span>
             <i class="el-icon-my-home" />
-            组织列表</span>
+            组织列表</span> -->
           <el-tree
             ref="tree"
             :data="treeData"
             :props="defaultProps"
-            node-key="id"
+            node-key="orgId"
+            :default-expanded-keys="defaultCheck"
             highlight-current
             :expand-on-click-node="false"
           >
@@ -31,9 +32,9 @@
             <div class="list-box">
               <span class="title">姓名</span>
               <el-input
+                v-model="employeeQuery.employeeName"
                 placeholder="姓名"
                 style="width: 200px"
-                v-model="employeeQuery.employeeName"
                 clearable
               />
             </div>
@@ -48,10 +49,10 @@
             <div class="staff-btn-one">
               <div class="button-box">
                 <el-button
-                class="btn-upload"
-                :disabled="!hasButtons('upload-staff-excel')"
-                @click="uploadModel"
-              >导出员工信息模板</el-button>
+                  class="btn-upload"
+                  :disabled="!hasButtons('upload-staff-excel')"
+                  @click="uploadModel"
+                >导出员工信息模板</el-button>
               </div>
               <div class="button-box">
                 <el-upload
@@ -65,31 +66,34 @@
                   :on-success="handleSuccess"
                   :disabled="!hasButtons('load-staff-info')"
                 >
-                  <el-button class="add" :disabled="!hasButtons('load-staff-info')">批量导入员工信息</el-button>
+                  <el-button
+                    class="add"
+                    :disabled="!hasButtons('load-staff-info')"
+                  >批量导入员工信息</el-button>
                 </el-upload>
               </div>
+              <!-- <div class="button-box">
+                <el-button
+                  class="btn-leave"
+                  @click="staffLeave"
+                >离职</el-button>
+              </div>
               <div class="button-box">
-               <el-button
-                class="btn-leave"
-                @click="staffLeave"
-              >离职</el-button>
-             </div>
-              <div class="button-box">
-               <el-button
-                class="btn-change"
-                @click="changeStaff"
-              >发起异动</el-button>
-             </div>
+                <el-button
+                  class="btn-change"
+                  @click="changeStaff"
+                >发起异动</el-button>
+              </div> -->
             </div>
-             <div class="button-box">
-               <el-button
+            <div class="button-box">
+              <el-button
                 class="btn-screen"
                 :disabled="!hasButtons('screen-staff')"
                 @click="drawerFun"
               >筛选</el-button>
-             </div>
-             <!-- 导出员工数据 -->
-             <!-- 不能删 暂时隐藏 -->
+            </div>
+            <!-- 导出员工数据 -->
+            <!-- 不能删 暂时隐藏 -->
             <!-- <el-dropdown @command="exportTempModel">
               <el-button type="primary">
                 导出
@@ -101,9 +105,6 @@
               </el-dropdown-menu>
             </el-dropdown> -->
             <!-- <el-button class="insert" type="primary">批量操作</el-button> -->
-            
-            
-            
           </div>
         </div>
         <!-- <div class="staff-info">
@@ -117,12 +118,13 @@
           </span>
         </div> -->
         <div class="table-view">
-          <el-table :data="tableData" stripe @selection-change="getSelectionChange" :header-cell-style="{ background: '#F7F8FA', color: '#293B59' }">
-            <el-table-column
-              type="selection"
-              width="55"
-              align="center"
-            />
+          <el-table
+            :data="tableData"
+            stripe
+            :header-cell-style="{ background: '#F7F8FA', color: '#293B59' }"
+            @selection-change="getSelectionChange"
+          >
+            <el-table-column type="selection" width="55" align="center" />
             <el-table-column fixed label="员工名字" width="180">
               <template slot-scope="scope">
                 <span
@@ -131,11 +133,7 @@
                 >{{ scope.row.employeeName }}</span>
               </template>
             </el-table-column>
-            <el-table-column
-              prop="age"
-              label="年龄"
-              width="180"
-            />
+            <el-table-column prop="age" label="年龄" width="180" />
             <el-table-column prop="mobile" label="手机" />
             <el-table-column prop="email" label="邮箱" />
             <el-table-column label="性别">
@@ -164,46 +162,58 @@
                   :disabled="!hasButtons('staff-manage-del')"
                   @click="deleteStaff(scope.$index, scope.row)"
                 >删除</el-button>
-                <el-popover
-                  ref="popover3"
-                  placement="right"
-                  width="200"
-                  trigger="click"
-                >
+                <el-popover placement="left" width="200" trigger="click">
                   <div>
-                    <!-- 发起签署 -->
                     <el-popover
-                      ref="popover4"
-                      placement="left"
-                      width="200"
-                      trigger="click"
-                    >
-                      <div class="contract-box">
-                        <p class="contract-title">请选择签署协议</p>
-                        <div>
-                          <div class="contract-list">
-                            <el-checkbox
-                              v-model="contract.labor"
-                            >劳动合同</el-checkbox>
+                          ref="popover4"
+                          placement="left"
+                          width="200"
+                          trigger="click"
+                        >
+                          <div class="contract-box">
+                            <p class="contract-title">请选择签署协议</p>
+                            <div>
+                              <div class="contract-list">
+                                <el-checkbox
+                                  v-model="contract.labor"
+                                >劳动合同</el-checkbox>
+                              </div>
+                              <div class="contract-submit">
+                                <el-button
+                                  type="primary"
+                                  :disabled="
+                                    !hasButtons('staff-manage-popover')
+                                  "
+                                  @click="
+                                    signTheContract(scope.$index, scope.row)
+                                  "
+                                >发起签署</el-button>
+                              </div>
+                            </div>
                           </div>
-                          <div class="contract-submit">
-                            <el-button
-                              type="primary"
-                              :disabled="!hasButtons('staff-manage-popover')"
-                              @click="signTheContract(scope.$index, scope.row)"
-                            >发起签署</el-button>
-                          </div>
-                        </div>
-                      </div>
+                          <el-button
+                            slot="reference"
+                            type="text"
+                            icon="el-icon-edit"
+                          >签署合同</el-button>
+                        </el-popover>
+                    <div>
                       <el-button
-                        slot="reference"
-                        icon="el-icon-edit"
-                      >选择合同</el-button>
-                    </el-popover>
+                        type="text"
+                        @click="staffLeave(scope.row)"
+                        icon="el-icon-male"
+                      >离职</el-button>
+                    </div>
+                    <div>
+                      <el-button
+                        type="text"
+                        icon="el-icon-edit-outline"
+                        @click="changeStaff(scope.row)"
+                      >发起异动</el-button>
+                    </div>
+                    
                   </div>
-                  <el-button slot="reference" :disabled="!hasButtons('staff-manage-popover')" type="text" icon="el-icon-edit">
-                    签署合同
-                  </el-button>
+                  <el-button slot="reference" style="padding-left:10px" type="text">更多</el-button>
                 </el-popover>
               </template>
             </el-table-column>
@@ -228,10 +238,7 @@
       <div class="drawer_content">
         <el-form :model="employeeQuery" label-width="80px">
           <el-form-item label="员工姓名">
-            <el-input
-              v-model="employeeQuery.employeeName"
-              autocomplete="off"
-            />
+            <el-input v-model="employeeQuery.employeeName" autocomplete="off" />
           </el-form-item>
           <el-form-item label="年龄区间">
             <div class="group">
@@ -557,15 +564,15 @@
               <tr>
                 <th>员工姓名</th>
                 <td>
-                  <span v-text="form.employeeName"></span>
+                  <span v-text="form.employeeName" />
                 </td>
                 <th>部门</th>
                 <td>
-                  <span v-text="form.changeBeforeOrgName"></span>
+                  <span v-text="form.changeBeforeOrgName" />
                 </td>
                 <th>职位</th>
                 <td>
-                  <span v-text="form.changeBeforePostName"></span>
+                  <span v-text="form.changeBeforePostName" />
                 </td>
                 <th>异动生效时间</th>
                 <td>
@@ -597,7 +604,7 @@
                   异动前职位
                 </th>
                 <td>
-                  <span v-text="form.changeBeforePostName"></span>
+                  <span v-text="form.changeBeforePostName" />
                 </td>
                 <th>
                   异动后职位
@@ -665,17 +672,17 @@
               <tr>
                 <th>员工姓名</th>
                 <td>
-                   <!-- <el-autocomplete
+                  <!-- <el-autocomplete
                     v-model="form.employeeName"
                     placeholder="请输入内容"
                     :fetch-suggestions="querySearchAsync"
                     @select="handleSelect"
                   /> -->
-                  <span v-text="form.employeeName"></span>
+                  <span v-text="form.employeeName" />
                 </td>
                 <th>入职时间</th>
                 <td>
-                  <span v-text="form.entryDate"></span>
+                  <span v-text="form.entryDate" />
                 </td>
                 <th>司龄</th>
                 <td>
@@ -724,13 +731,13 @@
               </tr>
               <tr>
                 <td colspan="3" style="line-height: 40px;">
-                  <span v-text="form.changeBeforeCompanyName"></span>
+                  <span v-text="form.changeBeforeCompanyName" />
                 </td>
                 <td colspan="3">
-                  <span v-text="form.changeBeforeOrgName"></span>
+                  <span v-text="form.changeBeforeOrgName" />
                 </td>
                 <td colspan="2">
-                  <span v-text="form.changeBeforePostName"></span>
+                  <span v-text="form.changeBeforePostName" />
                 </td>
               </tr>
               <tr>
@@ -798,7 +805,6 @@
         </span>
       </el-dialog>
     </div>
-
   </div>
 </template>
 
@@ -822,13 +828,13 @@ import {
   addLeaveStaff
   // 查询组织岗位职级
 } from '@/api/personnel/staff'
-import { addChange,empChange } from '@/api/personnel/PersonnelTurnover'
+import { addChange, empChange } from '@/api/personnel/PersonnelTurnover'
 
 import { selectAllDrop } from '@/api/user'
 import { getToken } from '@/utils/auth'
 import { getAttrMenu } from '@/api/attrManage'
-//导入判断是否拥有该按钮
-import { isButtons } from "@/utils/button";
+// 导入判断是否拥有该按钮
+import { isButtons } from '@/utils/button'
 import { getBayIdManOrg } from '@/api/management/orgManage'
 import { getPostList } from '@/api/management/postManage'
 import axios from 'axios'
@@ -859,7 +865,7 @@ export default {
         postIdList: [],
         rankId: null,
         rankIdList: [],
-        status: 2,
+        status: 2
       },
       // 岗位请求参数
       postQuery: {},
@@ -934,7 +940,7 @@ export default {
       modelVisible: false,
       parentIdAll: null,
       orgId: null,
-      multipleSelection:'',
+      multipleSelection: '',
       changeTempTypeOpt: [
         { id: 0, name: '本公司' },
         { id: 1, name: '跨公司' }
@@ -951,8 +957,10 @@ export default {
         checkStrictly: true,
         emitPath: false
       },
-      option:true,
-      multipleList:[]
+      option: true,
+      multipleList: [],
+      // 默认展开
+      defaultCheck: []
     }
   },
   mounted() {
@@ -967,20 +975,20 @@ export default {
       const data = getEmployeesList(this.employeeQuery)
       data.then(
         res => (
-          (this.tableData = res.data.records),
-          (this.total = res.data.total)
+          (this.tableData = res.data.records), (this.total = res.data.total)
         )
       )
     },
     hasButtons(data) {
-      return isButtons(data);
+      return isButtons(data)
     },
     getInfo() {
-      const org = getBayIdManOrg(this.orgQuery)
-      const post = getPost(this.postQuery)
-      const rank = getRank(this.rankQuery)
-      const isLeave=2;
-      const tree = findOrgTree({isLeave})
+      const that = this
+      const org = getBayIdManOrg(that.orgQuery)
+      const post = getPost(that.postQuery)
+      const rank = getRank(that.rankQuery)
+      const isLeave = 2
+      const tree = findOrgTree({ isLeave })
       const emTotal = getTotal()
       const change = getAttrMenu({ valueCode: 'change_type' })
       const query = {
@@ -990,17 +998,21 @@ export default {
         postCode: null,
         postName: null
       }
-      const postList = getPostList(query);
-      Promise.all([org, rank, post, tree, emTotal,change,postList]).then(
-        res => (
-          (this.orgTreeData = res[0].data),
-          (this.rankOptions = res[1].data.data),
-          (this.postOptions = res[2].data.data),
-          (this.treeData = res[3].data.data),
-          (this.emTotalList = res[4].data),
-          (this.turnType = res[5].data[0].change_type.option),
-          (this.postData = res[6].data)
-        )
+      const postList = getPostList(query)
+      Promise.all([org, rank, post, tree, emTotal, change, postList]).then(
+        res => {
+          that.defaultCheck = []
+          console.log(res[3].data.data)
+          const { data } = res[3].data
+          that.defaultCheck.push(data[0].orgId)
+          that.orgTreeData = res[0].data
+          that.rankOptions = res[1].data.data
+          that.postOptions = res[2].data.data
+          that.treeData = data
+          that.emTotalList = res[4].data
+          that.turnType = res[5].data[0].change_type.option
+          that.postData = res[6].data
+        }
       )
     },
     getOption() {
@@ -1168,8 +1180,8 @@ export default {
 
     // 表格按钮事件
     edit(index, row) {
-      const port = this.userHas('staff-manage-view');
-      if(!port){
+      const port = this.userHas('staff-manage-view')
+      if (!port) {
         return
       }
       const { employeeId } = row
@@ -1184,9 +1196,9 @@ export default {
     },
     deleteStaff(index, row) {
       const that = this
-      
-      const port = this.userHas('staff-manage-del');
-      if(!port){
+
+      const port = this.userHas('staff-manage-del')
+      if (!port) {
         return
       }
       const { employeeId } = row
@@ -1214,12 +1226,12 @@ export default {
     getOneData() {},
     // 多选事件
     getSelectionChange(e) {
-      let arr = "";
-      e.forEach((v) => {
-        arr += v.employeeId + ",";
-      });
-      this.multipleSelection = arr;
-      this.multipleList=e
+      let arr = ''
+      e.forEach(v => {
+        arr += v.employeeId + ','
+      })
+      this.multipleSelection = arr
+      this.multipleList = e
     },
     addEmp() {
       // this.$router.push({ name: 'addEmployees', params: { employeeId: 0 }})
@@ -1258,11 +1270,9 @@ export default {
     },
     // 导出模板
     uploadModel() {
-      
-      
       const that = this
-      const port = that.userHas('upload-staff-excel');
-      if(!port){
+      const port = that.userHas('upload-staff-excel')
+      if (!port) {
         return
       }
       const ajax = axios.create({
@@ -1292,9 +1302,9 @@ export default {
     exportTempModel(e) {
       this.dialogVisible = true
     },
-    //重置查询
-    runReset(){
-      this.employeeQuery= {
+    // 重置查询
+    runReset() {
+      this.employeeQuery = {
         employeeId: null,
         employeeName: null,
         orgId: null,
@@ -1306,13 +1316,12 @@ export default {
         rankIdList: []
         // status: 2,
       }
-      this.total=0;
+      this.total = 0
       this.geteEployees()
     },
     exportTemp(e) {
-
       const that = this
-      
+
       const ajax = axios.create({
         timeout: 20000 // 超时时间
       })
@@ -1373,8 +1382,8 @@ export default {
     hindleChanged() {},
     // 签署合同
     signTheContract(index, e) {
-      const port = this.userHas('staff-manage-popover');
-      if(!port){
+      const port = this.userHas('staff-manage-popover')
+      if (!port) {
         return
       }
       if (!this.contract.labor) {
@@ -1406,15 +1415,14 @@ export default {
       this.geteEployees()
     },
     drawerFun() {
-      const port = this.userHas('screen-staff');
-      if(!port){
+      const port = this.userHas('screen-staff')
+      if (!port) {
         return
       }
       this.employeeQuery.status = null
       this.employeeQuery.orgId = null
       this.isActive = null
       this.drawer = true
-     
     },
     getOrgId(e) {
       const { orgId, parentIdAll } = e
@@ -1424,18 +1432,19 @@ export default {
       this.employeeQuery.orgId = orgId
       this.geteEployees()
     },
-    //用户权限按钮
-    userHas(e){
+    // 用户权限按钮
+    userHas(e) {
       if (!this.hasButtons(e)) {
-        this.$message.error("对不起,你不具备操作权限");
-        return false;
-      }else{
-        return true;
+        this.$message.error('对不起,你不具备操作权限')
+        return false
+      } else {
+        return true
       }
     },
-    //员工离职
-    staffLeave(){
-      const that=this;
+    // 员工离职
+    staffLeave(row) {
+      const { employeeId } = row
+      const that = this
       that
         .$confirm('此操作将会让员工离职, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -1443,7 +1452,7 @@ export default {
           type: 'warning'
         })
         .then(() => {
-          const empIdList = that.multipleSelection;
+          const empIdList = employeeId
           // 删除信息
           addLeaveStaff(empIdList).then(res => {
             if (res.code === 0) {
@@ -1456,16 +1465,9 @@ export default {
         })
         .catch(err => {})
     },
-    //员工异动
-    changeStaff(){
-
-      const that=this;
-      const list = that.multipleList
-      console.log(list);
-      if(list.length !== 1){
-        that.$message.error('只能修改一个')
-        return
-      }
+    // 员工异动
+    changeStaff(row) {
+      const that = this
       that
         .$confirm('是否对该员工发起异动?', '提示', {
           confirmButtonText: '确定',
@@ -1473,52 +1475,64 @@ export default {
           type: 'warning'
         })
         .then(() => {
-          const {employeeId} = list[0];
-          that.form.employeeId=employeeId
-          empChange({empId:employeeId})
-          .then(res=>{
-            if(res.code === 0){
-              const { companyName,empId,orgName,employeeName,postName,company,orgId,postId,seniority,entryDate }=res.data;
-              that.$set(that.form, "changeBeforeCompanyName", companyName || '无');
-              that.$set(that.form, "changeBeforeOrgName", orgName || '无');
-              that.$set(that.form, "changeBeforePostName", postName || '无');
-              that.$set(that.form, "changeBeforeCompanyId", company || null);
-              that.$set(that.form, "changeBeforeOrgId", orgId);
-              that.$set(that.form, "changeBeforePostId", postId);
-              that.$set(that.form, "seniority", seniority || 0);
-              that.$set(that.form, "entryDate", entryDate || null);
-              that.$set(that.form, "employeeName", employeeName || '无');
-              
-              that.dialogVisible=true
+          const { employeeId } = row
+          that.form.employeeId = employeeId
+          empChange({ empId: employeeId }).then(res => {
+            if (res.code === 0) {
+              const {
+                companyName,
+                empId,
+                orgName,
+                employeeName,
+                postName,
+                company,
+                orgId,
+                postId,
+                seniority,
+                entryDate
+              } = res.data
+              that.$set(
+                that.form,
+                'changeBeforeCompanyName',
+                companyName || '无'
+              )
+              that.$set(that.form, 'changeBeforeOrgName', orgName || '无')
+              that.$set(that.form, 'changeBeforePostName', postName || '无')
+              that.$set(that.form, 'changeBeforeCompanyId', company || null)
+              that.$set(that.form, 'changeBeforeOrgId', orgId)
+              that.$set(that.form, 'changeBeforePostId', postId)
+              that.$set(that.form, 'seniority', seniority || 0)
+              that.$set(that.form, 'entryDate', entryDate || null)
+              that.$set(that.form, 'employeeName', employeeName || '无')
 
+              that.dialogVisible = true
             }
           })
-          
         })
         .catch(err => {})
     },
-    //增加异动
-    submit(){
-      let data;
-      const that=this;
+    // 增加异动
+    submit() {
+      let data
+      const that = this
       // if(that.option){
-        data=addChange(that.form);
+      data = addChange(that.form)
       // }else{
       //   data=updataChange(that.form)
       // }
-      data.then(res=>{
-        if(res.code === 0){
+      data.then(res => {
+        if (res.code === 0) {
           that.$message.success(res.message)
-          that.dialogVisible=false;
-        }else{
+          that.dialogVisible = false
+        } else {
           that.$message.error(res.message)
         }
       })
     },
     // 切换模板
     changeType(e) {
-      this.form.changeTempType =e
-    },
+      this.form.changeTempType = e
+    }
   }
 }
 </script>
@@ -1624,8 +1638,8 @@ export default {
   .el-drawer {
     overflow: scroll;
   }
-  .staff-btn-list{
-    .staff-btn-one{
+  .staff-btn-list {
+    .staff-btn-one {
       display: flex;
     }
     justify-content: space-between;
@@ -1664,7 +1678,7 @@ export default {
       max-width: 250px;
       min-width: 200px;
       border-right: 1px solid #ededed;
-      padding: 15px 20px;
+      padding: 10px 5px;
     }
     .main-box {
       flex: 3;

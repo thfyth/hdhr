@@ -3,15 +3,16 @@
     <div class="box-com">
       <div class="org-box">
         <div class="tree-view">
-          <span>
+          <!-- <span>
             <i class="el-icon-my-home" />
-            组织列表</span>
+            组织列表</span> -->
           <el-tree
             ref="tree"
             :data="treeData"
             :props="defaultProps"
-            node-key="id"
+            node-key="orgId"
             highlight-current
+            :default-expanded-keys="defaultCheck"
             :expand-on-click-node="false"
           >
             <div slot-scope="{ data }" class="custom-tree-node">
@@ -538,7 +539,8 @@ export default {
       emTotalList: [],
       dialogVisible: false,
       parentIdAll: null,
-      orgId: null
+      orgId: null,
+      defaultCheck:[]
     }
   },
   created() {
@@ -563,21 +565,24 @@ export default {
       return isButtons(data);
     },
     getInfo() {
-      const org = getBayIdManOrg(this.orgQuery)
-      const post = getPost(this.postQuery)
-      const rank = getRank(this.rankQuery)
+      const that=this
+      const org = getBayIdManOrg(that.orgQuery)
+      const post = getPost(that.postQuery)
+      const rank = getRank(that.rankQuery)
       const isLeave=3;
       const tree = findOrgTree({isLeave})
       const emTotal = getTotal()
+      that.defaultCheck = []
       Promise.all([org, rank, post, tree, emTotal]).then(
-        res => (
-          (this.orgTreeData = res[0].data),
-          (this.rankOptions = res[1].data.data),
-          (this.postOptions = res[2].data.data),
-          (this.treeData = res[3].data.data),
-          (this.emTotalList = res[4].data)
-        )
-      )
+        res =>{
+          const { data } = res[3].data
+          that.defaultCheck.push(data[0].orgId)
+          that.orgTreeData = res[0].data
+          that.rankOptions = res[1].data.data
+          that.postOptions = res[2].data.data
+          that.treeData =data
+          that.emTotalList = res[4].data
+        })
     },
     getOption() {
       const that = this
@@ -1051,7 +1056,7 @@ export default {
       max-width: 250px;
       min-width: 200px;
       border-right: 1px solid #ededed;
-      padding: 15px 20px;
+      padding: 10px 5px;
     }
     .main-box {
       flex: 3;

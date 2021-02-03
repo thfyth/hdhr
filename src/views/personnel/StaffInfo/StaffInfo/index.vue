@@ -2555,7 +2555,9 @@ export default {
       attendQuery: {
         empId: this.$route.params.employeeId,
         month: null,
-        type: null
+        type: null,
+        pageNumber: '1',
+        pageSize: '10',
       },
       timeOpt: [
         {

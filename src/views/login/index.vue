@@ -16,10 +16,11 @@
               <el-input
                 ref="username"
                 v-model="loginForm.userName"
-                placeholder="Username"
+                placeholder="用户名"
                 name="username"
                 type="text"
                 tabindex="1"
+                @keyup.enter.native="handleLogin"
                 auto-complete="on"
               />
             </el-form-item>
@@ -29,7 +30,7 @@
                 ref="password"
                 v-model="loginForm.password"
                 :type="passwordType"
-                placeholder="Password"
+                placeholder="密码"
                 name="password"
                 tabindex="2"
                 auto-complete="on"
@@ -62,8 +63,8 @@ export default {
   data() {
     return {
       loginForm: {
-        userName: "admin",
-        password: "hr2020",
+        userName: '',
+        password: '',
         grantType: "password",
       },
       loading: false,
@@ -99,6 +100,10 @@ export default {
       });
     },
     handleLogin() {
+      if(this.loginForm.userName == '' || this.loginForm.password == ''){
+        this.$message.error("请输入用户名和密码")
+        return false;
+      }
       this.loading = true;
       this.$store
         .dispatch("user/login", this.loginForm)
@@ -288,7 +293,6 @@ $cursor: #fff;
       height: 45px;
       background: #419EFF;
       border-radius: 4px;
-      opacity: 0.5;
     }
     .password-form{
       position: relative;
