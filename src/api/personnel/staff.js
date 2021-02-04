@@ -25,16 +25,16 @@ export function getIdEmployees(data) {
 export function getEmployeesList(data) {
     return post('employee/selectAll',data);
 }
-//导出员工信息模板
-export function exportEmployeesModel() {
-    return down('employee/exportTemplate');
-}
+// //导出员工信息模板
+// export function exportEmployeesModel() {
+//     return down('employee/exportTemplate');
+// }
 
 
-//导出员工信息
-export function exportTemplates(data) {
-    return down('employee/exportTemplates',data);
-}
+// //导出员工信息
+// export function exportTemplates(data) {
+//     return down('employee/exportTemplates',data);
+// }
 export function test(){
     return get('employee/exportTemplate');
 }
@@ -298,4 +298,29 @@ export function getAttendInfo(data) {
 //新增离职员工
 export function addLeaveStaff(data) {
     return put('employee/leave/insert?empIdList='+data);
+}
+
+
+
+//员工文件导出
+
+//导出员工所有信息
+export function exportEmpAll(data) {
+    return down('employee/excel/exportEmpAll',data);
+}
+//导出员工筛选信息
+export function exportEmpFilter(data) {
+    return down('employee/excel/exportEmpFilter',data);
+}
+//导入员工信息模板
+export function exportExcelTemplate(data) {
+    return post('employee/excel/exportTemplate',data);
+}
+//获取导出用到的字段名
+export function getField() {
+    return get('employee/excel/getField');
+}
+//批量导入员工信息
+export function insertExcel(data) {
+    return post('employee/excel/insert/batch',data);
 }

@@ -26,8 +26,8 @@ const hideLoading = () => {
 const service = axios.create({
 	timeout: 20000, // 超时时间
 	// baseURL: 'http://192.168.1.105:9004/api/', // 公共地址
-	// baseURL: 'http://192.168.1.52:9004/api/', // 公共地址
-	baseURL: 'http://39.98.171.233:9004/api/', // 公共地址
+	baseURL: 'http://192.168.1.52:9004/api/', // 公共地址
+	// baseURL: 'http://39.98.171.233:9004/api/', // 公共地址
 	// baseURL: 'http://192.168.1.22:9004/api/', // 公共地址
 })
 
@@ -45,7 +45,6 @@ service.interceptors.request.use(
     return config
   },
   error => {
-	  console.log(error);
 	setTimeout(() => {
 		hideLoading()
 	}, 200);
@@ -57,6 +56,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
 	response => {
 		const res = response.data;
+		hideLoading()
 		if (res.code === -1) {
 			store.dispatch('user/resetToken').then(() => {
 				router.replace({
@@ -69,24 +69,18 @@ service.interceptors.response.use(
 			})
 			store.dispatch("user/setUserStaus", true);
 			store.dispatch("user/setErrMsg", res.message);
-			hideLoading()
 			Message.error(res.message);
 			return Promise.reject(new Error(res.message || 'Error'));
 			//判断状态
 		} else if (res.code == 400 || res.code == 120 || res.code == 500) {
-			setTimeout(() => {
-				hideLoading();
-			}, 200);
 			// router.go(0);
 			Message.error(res.message);
 		} else if (res.code === 0 || res.code === 404) {
-			
-			setTimeout(() => {
-				hideLoading();
-			}, 200);
 			return response;
 		} else {
 			Message.error(res.message);
+			console.log(response);
+			return response;
 		}
 
 	},
@@ -161,14 +155,18 @@ export function deletefn(url, params) {
  * @param {String} url [请求的url地址]
  * @param {Object} params [请求时携带的参数]
  */
-export function down(url) {
+export function down(url,params) {
 	return new Promise((resolve, reject) => {
 		service({
 			method: 'post',
 			url,
+			data:params,
 			responseType: 'arraybuffer'
 		})
 			.then(res => {
+				console.log('====================================');
+				console.log(res);
+				console.log('====================================');
 				resolve(res);
 			})
 			.catch(err => {

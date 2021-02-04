@@ -49,28 +49,10 @@
             <div class="staff-btn-one">
               <div class="button-box">
                 <el-button
-                  class="btn-upload"
-                  :disabled="!hasButtons('upload-staff-excel')"
-                  @click="uploadModel"
-                >导出员工信息模板</el-button>
-              </div>
-              <div class="button-box">
-                <el-upload
-                  ref="upload"
-                  class="upload-demo"
-                  action="http://39.98.171.233:9004/api/employee/insert/batch"
-                  multiple
-                  :headers="headersData"
-                  :file-list="fileList"
-                  :on-preview="handlePreview"
-                  :on-success="handleSuccess"
-                  :disabled="!hasButtons('load-staff-info')"
-                >
-                  <el-button
                     class="add"
                     :disabled="!hasButtons('load-staff-info')"
-                  >批量导入员工信息</el-button>
-                </el-upload>
+                    @click="exportDialog = true"
+                  >导入员工信息</el-button>
               </div>
               <!-- <div class="button-box">
                 <el-button
@@ -84,6 +66,22 @@
                   @click="changeStaff"
                 >发起异动</el-button>
               </div> -->
+              <div class="btn-b">
+                <el-dropdown @command="exportTempModel">
+                  <el-button type="primary">
+                    导出
+                    <i class="el-icon-arrow-down el-icon--right" />
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item
+                      command="all"
+                    >导出所有数据</el-dropdown-item>
+                    <el-dropdown-item
+                      command="screen"
+                    >导出筛选数据</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
             </div>
             <div class="button-box">
               <el-button
@@ -94,16 +92,7 @@
             </div>
             <!-- 导出员工数据 -->
             <!-- 不能删 暂时隐藏 -->
-            <!-- <el-dropdown @command="exportTempModel">
-              <el-button type="primary">
-                导出
-                <i class="el-icon-arrow-down el-icon--right" />
-              </el-button>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="all">导出所有数据</el-dropdown-item>
-                <el-dropdown-item>导出筛选数据</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown> -->
+
             <!-- <el-button class="insert" type="primary">批量操作</el-button> -->
           </div>
         </div>
@@ -165,43 +154,39 @@
                 <el-popover placement="left" width="200" trigger="click">
                   <div>
                     <el-popover
-                          ref="popover4"
-                          placement="left"
-                          width="200"
-                          trigger="click"
-                        >
-                          <div class="contract-box">
-                            <p class="contract-title">请选择签署协议</p>
-                            <div>
-                              <div class="contract-list">
-                                <el-checkbox
-                                  v-model="contract.labor"
-                                >劳动合同</el-checkbox>
-                              </div>
-                              <div class="contract-submit">
-                                <el-button
-                                  type="primary"
-                                  :disabled="
-                                    !hasButtons('staff-manage-popover')
-                                  "
-                                  @click="
-                                    signTheContract(scope.$index, scope.row)
-                                  "
-                                >发起签署</el-button>
-                              </div>
-                            </div>
+                      ref="popover4"
+                      placement="left"
+                      width="200"
+                      trigger="click"
+                    >
+                      <div class="contract-box">
+                        <p class="contract-title">请选择签署协议</p>
+                        <div>
+                          <div class="contract-list">
+                            <el-checkbox
+                              v-model="contract.labor"
+                            >劳动合同</el-checkbox>
                           </div>
-                          <el-button
-                            slot="reference"
-                            type="text"
-                            icon="el-icon-edit"
-                          >签署合同</el-button>
-                        </el-popover>
+                          <div class="contract-submit">
+                            <el-button
+                              type="primary"
+                              :disabled="!hasButtons('staff-manage-popover')"
+                              @click="signTheContract(scope.$index, scope.row)"
+                            >发起签署</el-button>
+                          </div>
+                        </div>
+                      </div>
+                      <el-button
+                        slot="reference"
+                        type="text"
+                        icon="el-icon-edit"
+                      >签署合同</el-button>
+                    </el-popover>
                     <div>
                       <el-button
                         type="text"
-                        @click="staffLeave(scope.row)"
                         icon="el-icon-male"
+                        @click="staffLeave(scope.row)"
                       >离职</el-button>
                     </div>
                     <div>
@@ -211,9 +196,12 @@
                         @click="changeStaff(scope.row)"
                       >发起异动</el-button>
                     </div>
-                    
                   </div>
-                  <el-button slot="reference" style="padding-left:10px" type="text">更多</el-button>
+                  <el-button
+                    slot="reference"
+                    style="padding-left:10px"
+                    type="text"
+                  >更多</el-button>
                 </el-popover>
               </template>
             </el-table-column>
@@ -804,6 +792,76 @@
           <el-button type="primary" @click="submit">确 定</el-button>
         </span>
       </el-dialog>
+      <el-dialog
+        title="导出条件"
+        :visible.sync="centerDialogVisible"
+        width="30%"
+        center
+      >
+        <div class="screen-box">
+          <el-checkbox
+            v-model="checkAll"
+            :indeterminate="isIndeterminate"
+            @change="handleCheckAllChange"
+          >全选</el-checkbox>
+          <div style="margin: 15px 0;" />
+          <el-checkbox-group
+            v-model="screenChecked"
+            @change="handleCheckedChange"
+            :min="1"
+          >
+            <template v-for="item in screenList">
+              <div :key="item.screenName" class="screen-list">
+                <el-checkbox :label="item">{{ item.screenValue }}</el-checkbox>
+              </div>
+            </template>
+          </el-checkbox-group>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="centerDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="exportScreen">确 定</el-button>
+        </span>
+      </el-dialog>
+      <el-dialog
+        title="导入员工信息"
+        :visible.sync="exportDialog"
+        center
+        width="40%">
+        <div class="title-box">
+          <div class="button-box" style="margin-bottom:20px">
+                1、先下载模板：<el-button
+                  class="btn-upload"
+                  :disabled="!hasButtons('upload-staff-excel')"
+                  @click="uploadModel"
+                  type="primary"
+                >导出员工信息模板</el-button>
+              </div>
+              <div class="button-box">
+                
+                <el-upload
+                  ref="upload"
+                  class="upload-demo"
+                  action="http://39.98.171.233:9004/api/employee/excel/insert/batch"
+                  multiple
+                  :headers="headersData"
+                  :file-list="fileList"
+                  :on-preview="handlePreview"
+                  :on-success="handleSuccess"
+                  :disabled="!hasButtons('load-staff-info')"
+                >
+                2、填写信息后上传：
+                  <el-button
+                    class="add"
+                    type="primary"
+                    :disabled="!hasButtons('load-staff-info')"
+                  >批量导入员工信息</el-button>
+                </el-upload>
+              </div>
+        </div>
+        <div slot="footer">
+          <el-button type="primary" @click="exportDialog = false">退 出</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -812,20 +870,17 @@
 import tableView from '@/components/vTable.vue'
 import {
   delOneEmployees,
-  addOneEmployees,
-  importEmployees,
-  updateEmployees,
-  getIdEmployees,
   getEmployeesList,
-  exportEmployeesModel,
-  exportTemplates,
-  test,
-  getOrg,
   getPost,
   getRank,
   findOrgTree,
   getTotal,
-  addLeaveStaff
+  addLeaveStaff,
+  exportEmpAll,
+  exportEmpFilter,
+  exportExcelTemplate,
+  getField,
+  insertExcel
   // 查询组织岗位职级
 } from '@/api/personnel/staff'
 import { addChange, empChange } from '@/api/personnel/PersonnelTurnover'
@@ -838,13 +893,28 @@ import { isButtons } from '@/utils/button'
 import { getBayIdManOrg } from '@/api/management/orgManage'
 import { getPostList } from '@/api/management/postManage'
 import axios from 'axios'
+const ajax = axios.create({
+  timeout: 20000 // 超时时间
+})
+ajax.interceptors.request.use(config => {
+  config.headers['Authorization'] = 'Bearer ' + getToken()
+  return config
+})
+ajax.interceptors.response.use(config => {
+  return config
+})
 export default {
   components: {
     tableView
   },
   data() {
     return {
+      isIndeterminate: true,
+      checkAll: false,
+      screenChecked: [],
+      exportDialog:false,
       fileList: [],
+      postData:[],
       // 合同分类
       contract: {
         labor: true
@@ -960,7 +1030,9 @@ export default {
       option: true,
       multipleList: [],
       // 默认展开
-      defaultCheck: []
+      defaultCheck: [],
+      centerDialogVisible: false,
+      screenList: []
     }
   },
   mounted() {
@@ -982,6 +1054,16 @@ export default {
     hasButtons(data) {
       return isButtons(data)
     },
+    handleCheckAllChange(val) {
+      this.screenChecked = val ? this.screenList : []
+      this.isIndeterminate = false
+    },
+    handleCheckedChange(value) {
+      const checkedCount = value.length
+      this.checkAll = checkedCount === this.screenList.length
+      this.isIndeterminate =
+        checkedCount > 0 && checkedCount < this.screenList.length
+    },
     getInfo() {
       const that = this
       const org = getBayIdManOrg(that.orgQuery)
@@ -999,10 +1081,13 @@ export default {
         postName: null
       }
       const postList = getPostList(query)
-      Promise.all([org, rank, post, tree, emTotal, change, postList]).then(
-        res => {
+      // 获取导出用到的字段名
+      const getFie = getField()
+
+      Promise.all([org, rank, post, tree, emTotal, change, postList])
+        .then(res => {
           that.defaultCheck = []
-          console.log(res[3].data.data)
+
           const { data } = res[3].data
           that.defaultCheck.push(data[0].orgId)
           that.orgTreeData = res[0].data
@@ -1012,8 +1097,12 @@ export default {
           that.emTotalList = res[4].data
           that.turnType = res[5].data[0].change_type.option
           that.postData = res[6].data
-        }
-      )
+          return getFie
+        })
+        .then(res => {
+          console.log(res)
+          that.screenList = res.data
+        })
     },
     getOption() {
       const that = this
@@ -1187,7 +1276,6 @@ export default {
       const { employeeId } = row
       this.$router.push({
         path: `/personnel/staffOneInfo/${employeeId}`
-        // path: `/personnel/staffInfo/staffOneInfo/${employeeId}`
       })
     },
     // 点击用户名跳转
@@ -1239,21 +1327,6 @@ export default {
         this.$message.warning('请选择组织后再添加')
         return
       }
-      // let allId=null;
-      // console.log(this.parentIdAll);
-      // if(this.parentIdAll != null){
-      //   allId='';
-      //   let parentIdAll=this.parentIdAll.split(",");
-      //   if(parentIdAll.length>1){
-      //     parentIdAll.forEach(v=>{
-      //       console.log(v);
-      //       if(v != "null"){
-      //         allId = allId+v+",";
-      //       }
-      //     })
-      // }
-      // }
-
       this.$router.push({
         path:
           '/personnel/staffInfo/addEmployees/' +
@@ -1275,32 +1348,75 @@ export default {
       if (!port) {
         return
       }
-      const ajax = axios.create({
-        timeout: 20000 // 超时时间
-      })
-      ajax.interceptors.request.use(config => {
-        config.headers['Authorization'] = 'Bearer ' + getToken()
-        return config
-      })
-      ajax.interceptors.response.use(config => {
-        return config
-      })
       ajax({
         method: 'post',
-        url: 'http://39.98.171.233:9004/api/employee/exportTemplate',
+        url: 'http://39.98.171.233:9004/api/employee/excel/exportTemplate',
         responseType: 'arraybuffer'
       })
         // console.log(123);
         // exportEmployeesModel()
         .then(res => {
-          console.log(res)
           that.saveData(res.data, '通讯录人员.xlsx')
         })
         .catch(error => {})
     },
     // 导出员工信息
     exportTempModel(e) {
-      this.dialogVisible = true
+      if (e == 'all') {
+        // 导出员工所有信息
+        this.exportAllInfo()
+      } else {
+        this.centerDialogVisible = true
+      }
+    },
+    // 导出所有
+    exportAllInfo() {
+      ajax({
+        method: 'post',
+        url: 'http://39.98.171.233:9004/api/employee/excel/exportEmpAll',
+        responseType: 'arraybuffer'
+      })
+        // console.log(123);
+        // exportEmployeesModel()
+        .then(res => {
+          this.saveData(res.data, '员工信息.xlsx')
+          
+        })
+        .catch(error => {})
+    },
+    // 导出筛选
+    exportScreen() {
+      const employeeParam = this.screenChecked
+
+      const field = {}
+      if (employeeParam.length > 0) {
+        employeeParam.forEach(v => {
+          field[v.screenName] = v.screenValue
+        })
+      }else{
+        this.$message.error("至少选择一个筛选项");
+        return
+      }
+
+
+      const query = {
+        field
+      }
+      // exportEmpFilter(query).then(res => {
+      //   this.saveData(res.data, '员工信息.xlsx')
+      // })
+      ajax({
+        method: 'post',
+        url: 'http://39.98.171.233:9004/api/employee/excel/exportEmpFilter',
+        responseType: 'arraybuffer',
+        data:query
+      })
+        // console.log(123);
+        // exportEmployeesModel()
+        .then(res => {
+          this.saveData(res.data, '员工信息.xlsx')
+        })
+        .catch(error => {})
     },
     // 重置查询
     runReset() {
@@ -1321,21 +1437,10 @@ export default {
     },
     exportTemp(e) {
       const that = this
-
-      const ajax = axios.create({
-        timeout: 20000 // 超时时间
-      })
-      ajax.interceptors.request.use(config => {
-        config.headers['Authorization'] = 'Bearer ' + getToken()
-        return config
-      })
-      ajax.interceptors.response.use(config => {
-        return config
-      })
       const data = this.employeeQuery
       ajax({
         method: 'post',
-        url: 'http://39.98.171.233:9004/api/employee/exportTemplates',
+        url: 'http://39.98.171.233:9004/api/employee/excel/exportTemplate',
         responseType: 'arraybuffer',
         data
       })
@@ -1536,6 +1641,19 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.screen-box {
+  overflow: hidden;
+  overflow-y: scroll;
+  height: 200px;
+  border: 1px solid #999;
+  padding: 20px;
+  .screen-list {
+    line-height: 30px;
+  }
+}
+</style>
 
 <style lang="scss">
 .tur-main {

@@ -417,15 +417,7 @@
 import tableView from '@/components/vTable.vue'
 import {
   delOneEmployees,
-  addOneEmployees,
-  importEmployees,
-  updateEmployees,
-  getIdEmployees,
   getEmployeesList,
-  exportEmployeesModel,
-  exportTemplates,
-  test,
-  getOrg,
   getPost,
   getRank,
   findOrgTree,
