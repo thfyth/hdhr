@@ -75,11 +75,10 @@ service.interceptors.response.use(
 		} else if (res.code == 400 || res.code == 120 || res.code == 500) {
 			// router.go(0);
 			Message.error(res.message);
-		} else if (res.code === 0 || res.code === 404) {
+		} else if (res.code === 0 || res.code === 404 || res.code === 410) {
 			return response;
 		} else {
 			Message.error(res.message);
-			console.log(response);
 			return response;
 		}
 

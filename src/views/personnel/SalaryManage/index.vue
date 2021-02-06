@@ -82,8 +82,7 @@
           <el-dialog
               title="新增信息"
               :visible.sync="dialogVisible"
-              width="60%"
-              :before-close="dialogBeforeClose">
+              width="60%">
               <el-form :model="form" label-width="120px">
                   <el-row :gutter="10">
                       <el-col :span="8">

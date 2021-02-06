@@ -49,10 +49,10 @@
             <div class="staff-btn-one">
               <div class="button-box">
                 <el-button
-                    class="add"
-                    :disabled="!hasButtons('load-staff-info')"
-                    @click="exportDialog = true"
-                  >导入员工信息</el-button>
+                  class="add"
+                  :disabled="!hasButtons('load-staff-info')"
+                  @click="exportDialog = true"
+                >导入员工信息</el-button>
               </div>
               <!-- <div class="button-box">
                 <el-button
@@ -807,8 +807,8 @@
           <div style="margin: 15px 0;" />
           <el-checkbox-group
             v-model="screenChecked"
-            @change="handleCheckedChange"
             :min="1"
+            @change="handleCheckedChange"
           >
             <template v-for="item in screenList">
               <div :key="item.screenName" class="screen-list">
@@ -826,40 +826,43 @@
         title="导入员工信息"
         :visible.sync="exportDialog"
         center
-        width="40%">
+        width="40%"
+      >
         <div class="title-box">
           <div class="button-box" style="margin-bottom:20px">
-                1、先下载模板：<el-button
-                  class="btn-upload"
-                  :disabled="!hasButtons('upload-staff-excel')"
-                  @click="uploadModel"
-                  type="primary"
-                >导出员工信息模板</el-button>
-              </div>
-              <div class="button-box">
-                
-                <el-upload
-                  ref="upload"
-                  class="upload-demo"
-                  action="http://39.98.171.233:9004/api/employee/excel/insert/batch"
-                  multiple
-                  :headers="headersData"
-                  :file-list="fileList"
-                  :on-preview="handlePreview"
-                  :on-success="handleSuccess"
-                  :disabled="!hasButtons('load-staff-info')"
-                >
-                2、填写信息后上传：
-                  <el-button
-                    class="add"
-                    type="primary"
-                    :disabled="!hasButtons('load-staff-info')"
-                  >批量导入员工信息</el-button>
-                </el-upload>
-              </div>
+            1、先下载模板：<el-button
+              class="btn-upload"
+              :disabled="!hasButtons('upload-staff-excel')"
+              type="primary"
+              @click="uploadModel"
+            >导出员工信息模板</el-button>
+          </div>
+          <div class="button-box">
+            <el-upload
+              ref="upload"
+              class="upload-demo"
+              action="http://192.168.1.52:9004/api/employee/excel/insert/batch"
+              multiple
+              :headers="headersData"
+              :file-list="fileList"
+              :on-preview="handlePreview"
+              :on-success="handleSuccess"
+              :disabled="!hasButtons('load-staff-info')"
+            >
+              2、填写信息后上传：
+              <el-button
+                class="add"
+                type="primary"
+                :disabled="!hasButtons('load-staff-info')"
+              >批量导入员工信息</el-button>
+            </el-upload>
+          </div>
         </div>
         <div slot="footer">
-          <el-button type="primary" @click="exportDialog = false">退 出</el-button>
+          <el-button
+            type="primary"
+            @click="exportDialog = false"
+          >退 出</el-button>
         </div>
       </el-dialog>
     </div>
@@ -912,9 +915,9 @@ export default {
       isIndeterminate: true,
       checkAll: false,
       screenChecked: [],
-      exportDialog:false,
+      exportDialog: false,
       fileList: [],
-      postData:[],
+      postData: [],
       // 合同分类
       contract: {
         labor: true
@@ -1350,13 +1353,13 @@ export default {
       }
       ajax({
         method: 'post',
-        url: 'http://39.98.171.233:9004/api/employee/excel/exportTemplate',
+        url: 'http://192.168.1.52:9004/api/employee/excel/exportTemplate',
         responseType: 'arraybuffer'
       })
         // console.log(123);
         // exportEmployeesModel()
         .then(res => {
-          that.saveData(res.data, '通讯录人员.xlsx')
+          that.saveData(res.data, '员工信息导入模板.xlsx')
         })
         .catch(error => {})
     },
@@ -1373,14 +1376,13 @@ export default {
     exportAllInfo() {
       ajax({
         method: 'post',
-        url: 'http://39.98.171.233:9004/api/employee/excel/exportEmpAll',
+        url: 'http://192.168.1.52:9004/api/employee/excel/exportEmpAll',
         responseType: 'arraybuffer'
       })
         // console.log(123);
         // exportEmployeesModel()
         .then(res => {
           this.saveData(res.data, '员工信息.xlsx')
-          
         })
         .catch(error => {})
     },
@@ -1393,11 +1395,10 @@ export default {
         employeeParam.forEach(v => {
           field[v.screenName] = v.screenValue
         })
-      }else{
-        this.$message.error("至少选择一个筛选项");
+      } else {
+        this.$message.error('至少选择一个筛选项')
         return
       }
-
 
       const query = {
         field
@@ -1407,9 +1408,9 @@ export default {
       // })
       ajax({
         method: 'post',
-        url: 'http://39.98.171.233:9004/api/employee/excel/exportEmpFilter',
+        url: 'http://192.168.1.52:9004/api/employee/excel/exportEmpFilter',
         responseType: 'arraybuffer',
-        data:query
+        data: query
       })
         // console.log(123);
         // exportEmployeesModel()
@@ -1464,9 +1465,19 @@ export default {
       a.click()
     },
     handleSuccess(e) {
-      console.log(e)
       if (e.code === 0) {
         this.$message.success(e.message)
+      } else if (e.code === 410) {
+        const { message } = e.data
+
+        let info='';
+        for (let index = 1; index < message.length; index++) {
+          info += message[index] + ','
+        }
+        const title = message[0] + '：' + info
+        this.$alert(title, '提示', {
+          confirmButtonText: '确定',
+        });
       } else {
         this.$message.error(e.message)
       }

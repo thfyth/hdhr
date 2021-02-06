@@ -48,9 +48,9 @@
       </div>
       <div class="titles-list">
         
-          <div class="button-box">
+          <!-- <div class="button-box">
               <el-button class="add" @click="addTur">添加</el-button>
-            </div> 
+            </div>  -->
              <div class="button-box">
               <el-button class="del" @click="allDel">删除</el-button>
             </div>
@@ -166,12 +166,14 @@
               <tr>
                 <th>员工姓名</th>
                 <td>
-                  <el-autocomplete
+                  <!-- <el-autocomplete
                     v-model="form.employeeName"
                     placeholder="请输入内容"
                     :fetch-suggestions="querySearchAsync"
                     @select="handleSelect"
-                  />
+                  /> -->
+
+                  <span v-text="form.employeeName"></span>
                 </td>
                 <th>部门</th>
                 <td>
@@ -406,8 +408,9 @@
           </el-form>
         </div>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="submit">确 定</el-button>
+          <!-- <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="submit">确 定</el-button> -->
+          <el-button type="primary"  @click="dialogVisible = false">退 出</el-button>
         </span>
       </el-dialog>
     </div>

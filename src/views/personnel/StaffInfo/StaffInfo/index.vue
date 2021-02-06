@@ -540,7 +540,7 @@
                       max-height="250"
                       style="width: 100%; text-align: center"
                     >
-                      <el-table-column label="学校名称" width="85">
+                      <el-table-column label="学校名称">
                         <template slot-scope="scope">
                           <span
                             class="article"
@@ -551,15 +551,13 @@
                       </el-table-column>
                       <el-table-column
                         prop="beginDate"
-                        width="85"
                         label="入学时间"
                       />
                       <el-table-column
                         prop="endDate"
-                        width="85"
                         label="毕业时间"
                       />
-                      <el-table-column prop="degree" width="80" label="学位">
+                      <el-table-column prop="degree" label="学位">
                         <template slot-scope="scope">
                           <el-select
                             v-model="scope.row.degree"
@@ -578,16 +576,13 @@
                       <el-table-column
                         prop="degreeName"
                         label="学位名称"
-                        width="85"
                       />
                       <el-table-column
                         prop="degreeNo"
                         label="学位证书编号"
-                        width="120"
                       />
                       <el-table-column
                         prop="eduHistory"
-                        width="80"
                         label="学历"
                       >
                         <template slot-scope="scope">
@@ -607,22 +602,18 @@
                       </el-table-column>
                       <el-table-column
                         prop="eduUndergo"
-                        width="120"
                         label="教育经历描述"
                       />
                       <el-table-column
                         prop="cerNo"
                         label="毕业证书编号"
-                        width="120"
                       />
                       <el-table-column
                         prop="major"
                         label="所学专业"
-                        width="85"
                       />
                       <el-table-column
                         prop="studyType"
-                        width="85"
                         label="学习形式"
                       >
                         <template slot-scope="scope">
