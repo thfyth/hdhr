@@ -841,7 +841,7 @@
             <el-upload
               ref="upload"
               class="upload-demo"
-              action="http://192.168.1.52:9004/api/employee/excel/insert/batch"
+              action="http://39.98.171.233:9004/api/employee/excel/insert/batch"
               multiple
               :headers="headersData"
               :file-list="fileList"
@@ -1353,7 +1353,7 @@ export default {
       }
       ajax({
         method: 'post',
-        url: 'http://192.168.1.52:9004/api/employee/excel/exportTemplate',
+        url: 'http://39.98.171.233:9004/api/employee/excel/exportTemplate',
         responseType: 'arraybuffer'
       })
         // console.log(123);
@@ -1376,7 +1376,7 @@ export default {
     exportAllInfo() {
       ajax({
         method: 'post',
-        url: 'http://192.168.1.52:9004/api/employee/excel/exportEmpAll',
+        url: 'http://39.98.171.233:9004/api/employee/excel/exportEmpAll',
         responseType: 'arraybuffer'
       })
         // console.log(123);
@@ -1408,7 +1408,7 @@ export default {
       // })
       ajax({
         method: 'post',
-        url: 'http://192.168.1.52:9004/api/employee/excel/exportEmpFilter',
+        url: 'http://39.98.171.233:9004/api/employee/excel/exportEmpFilter',
         responseType: 'arraybuffer',
         data: query
       })
