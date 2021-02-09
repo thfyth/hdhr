@@ -101,7 +101,6 @@ export function get(url, params) {
 			reject(err.data)
 		})
 	});
-
 }
 export function post(url, params, name) {
 	return new Promise((resolve, reject) => {

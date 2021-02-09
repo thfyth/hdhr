@@ -1649,7 +1649,7 @@ export default {
     changeType(e) {
       this.form.changeTempType = e
     }
-  }
+  },
 }
 </script>
 
