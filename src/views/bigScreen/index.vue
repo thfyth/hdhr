@@ -837,7 +837,7 @@ export default {
       width: 1px;
       height: 80%;
       content: '000';
-      text-indent: 9999px;
+      text-indent: -9999px;
       position: absolute;
       right: -5px;
       top: 10%;

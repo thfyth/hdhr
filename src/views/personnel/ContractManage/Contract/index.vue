@@ -5,7 +5,7 @@
     </div>
     <div class="main-box">
       <div class="form-box">
-        <el-form :model="form" style="width: 98%" label-width="100px">
+        <el-form :model="form" style="width: 98%" label-width="100px"  :class="userOption&&!optionsType?'shadow-box':''">
           <table
             align="center"
             cellspacing="0"
@@ -378,9 +378,9 @@ export default {
             const code2 = TextToCode[strs[0]][strs[1]].code
             const code3 = TextToCode[strs[0]][strs[1]][strs[2]].code
             const arr = []
-            arr.push(code1)
-            arr.push(code2)
-            arr.push(code3)
+            arr.push(code1,code2,code3)
+            // arr.push(code2)
+            // arr.push(code3)
             that.address = arr
             that.uploadData.actId = res.data.contractList[0].contractId
           }
@@ -581,6 +581,10 @@ export default {
   .el-date-editor.el-input,
   .el-date-editor.el-input__inner {
     width: 100%;
+  }
+  .shadow-box{
+    box-shadow: rgb(0, 0, 0) 0px 0px 10px 0px;
+    padding: 10px;
   }
   .el-form {
     table {

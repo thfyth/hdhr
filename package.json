@@ -53,6 +53,7 @@
     "babel-eslint": "10.1.0",
     "babel-jest": "26.0.1",
     "babel-plugin-component": "^1.1.1",
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "chalk": "4.0.0",
     "compression-webpack-plugin": "^6.0.3",
     "connect": "3.7.0",

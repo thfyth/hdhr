@@ -11,7 +11,7 @@
           </div>
         </div>
         <div class="staffinfo-box">
-          <el-form ref="form" :model="form" label-width="140px">
+          <el-form ref="form" :model="form" label-width="140px" style="width:98%;margin:0 auto;" :class="option?'shadow-box':''">
             <table
               align="center"
               cellspacing="0"
@@ -3298,6 +3298,10 @@ export default {
         text-align: center !important;
       }
     }
+  }
+  .shadow-box{
+    box-shadow: rgb(0, 0, 0) 0px 0px 10px 0px;
+    padding: 10px;
   }
   .el-form {
     table {
